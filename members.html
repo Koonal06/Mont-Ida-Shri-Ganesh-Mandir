@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Members - Mont-Ida Shri Ganesh Mandir</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        :root {
+            --members-bg: #f6f7fb;
+            --members-card-bg: #ffffff;
+            --members-text: #1f2937;
+            --members-muted: #6b7280;
+            --members-radius: 16px;
+            --members-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+            --members-shadow-hover: 0 16px 34px rgba(15, 23, 42, 0.15);
+            --members-gold: #d4af37;
+            --members-gold-glow: rgba(212, 175, 55, 0.34);
+            --members-vp: #2563eb;
+            --members-secretary: #0f766e;
+            --members-treasurer: #dc2626;
+            --members-border: #e5e7eb;
+        }
+
+        .members-showcase {
+            background: var(--members-bg);
+            text-align: left;
+        }
+
+        .members-showcase .members-wrapper {
+            display: grid;
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        .members-showcase .top-row {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .members-showcase .executive-row {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .members-showcase .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+        }
+
+        .members-showcase .member-card {
+            background: var(--members-card-bg);
+            border: 2px solid var(--members-border);
+            border-radius: var(--members-radius);
+            padding: 14px;
+            box-shadow: var(--members-shadow);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .members-showcase .member-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--members-shadow-hover);
+        }
+
+        .members-showcase .role-badge {
+            display: inline-block;
+            margin-bottom: 10px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: #fff;
+            background: #4b5563;
+        }
+
+        .members-showcase .profile-photo {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            object-fit: cover;
+            border-radius: 12px;
+            display: block;
+            margin-bottom: 10px;
+            background: #e5e7eb;
+        }
+
+        .members-showcase h3 {
+            margin: 0 0 6px;
+            color: var(--members-text);
+            font-size: 1.08rem;
+        }
+
+        .members-showcase p {
+            margin: 0;
+            color: var(--members-muted);
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .members-showcase .president {
+            width: min(100%, 390px);
+            border-color: var(--members-gold);
+            box-shadow:
+                0 0 0 1px rgba(212, 175, 55, 0.24),
+                0 0 26px var(--members-gold-glow),
+                var(--members-shadow);
+        }
+
+        .members-showcase .president .role-badge {
+            background: var(--members-gold);
+            color: #1f2937;
+        }
+
+        .members-showcase .executive {
+            min-height: 100%;
+            transform-origin: center;
+        }
+
+        .members-showcase .executive.vp {
+            border-color: var(--members-vp);
+        }
+
+        .members-showcase .executive.secretary {
+            border-color: var(--members-secretary);
+        }
+
+        .members-showcase .executive.treasurer {
+            border-color: var(--members-treasurer);
+        }
+
+        .members-showcase .executive.vp .role-badge {
+            background: var(--members-vp);
+        }
+
+        .members-showcase .executive.secretary .role-badge {
+            background: var(--members-secretary);
+        }
+
+        .members-showcase .executive.treasurer .role-badge {
+            background: var(--members-treasurer);
+        }
+
+        .members-showcase .member {
+            border-color: var(--members-border);
+        }
+
+        .members-showcase .member .role-badge {
+            background: #6b7280;
+        }
+
+        @media (max-width: 900px) {
+            .members-showcase .executive-row {
+                grid-template-columns: 1fr;
+            }
+
+            .members-showcase .president {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <a class="logo" href="index.html" aria-label="Mont-Ida Shri Ganesh Mandir Home">
+            <img src="assets/images/logo.png" onerror="this.onerror=null;this.src='assets/images/ganesha-logo.svg';"
+                alt="Ganesha logo">
+            <span>Mont-Ida Shri Ganesh Mandir</span>
+        </a>
+        <button class="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false"
+            aria-controls="site-nav">Menu</button>
+        <ul class="nav-links" id="site-nav">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="events.html">Events</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="members.html" class="active">Members</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <section class="page-hero page-hero--members">
+        <div class="overlay"></div>
+        <div class="hero-content container">
+            <h1>Our Members</h1>
+            <p>Meet the team serving the temple and community.</p>
+        </div>
+        <div class="wave" aria-hidden="true">
+            <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M0,64 C180,130 420,0 620,52 C860,114 1020,28 1200,74 L1200,120 L0,120 Z"></path>
+            </svg>
+        </div>
+    </section>
+
+    <section class="page-section members-showcase">
+        <div class="container">
+            <h1>The Management</h1>
+            <p class="section-intro">Leadership and members dedicated to serving our temple and community.</p>
+
+            <div class="members-wrapper">
+                <div class="top-row">
+                    <article class="member-card president">
+                        <span class="role-badge">President</span>
+                        <img class="profile-photo" src="https://via.placeholder.com/640x480?text=President"
+                            alt="President profile photo">
+                        <h3>Mr. Placeholder President</h3>
+                        <p>Leads the temple committee, strategic planning, and major community initiatives.</p>
+                    </article>
+                </div>
+
+                <div class="executive-row">
+                    <article class="member-card executive vp">
+                        <span class="role-badge">Vice President</span>
+                        <img class="profile-photo" src="https://via.placeholder.com/640x480?text=Vice+President"
+                            alt="Vice President profile photo">
+                        <h3>Ms. Placeholder Vice President</h3>
+                        <p>Supports leadership decisions and coordinates volunteer and festival operations.</p>
+                    </article>
+
+                    <article class="member-card executive secretary">
+                        <span class="role-badge">Secretary</span>
+                        <img class="profile-photo" src="https://via.placeholder.com/640x480?text=Secretary"
+                            alt="Secretary profile photo">
+                        <h3>Mr. Placeholder Secretary</h3>
+                        <p>Manages records, announcements, and official communication for temple activities.</p>
+                    </article>
+
+                    <article class="member-card executive treasurer">
+                        <span class="role-badge">Treasurer</span>
+                        <img class="profile-photo" src="https://via.placeholder.com/640x480?text=Treasurer"
+                            alt="Treasurer profile photo">
+                        <h3>Ms. Placeholder Treasurer</h3>
+                        <p>Oversees budgeting, donations, and financial accountability for events and programs.</p>
+                    </article>
+                </div>
+
+                <div class="members-grid">
+                    <article class="member-card member">
+                        <span class="role-badge">Member</span>
+                        <img class="profile-photo" src="https://via.placeholder.com/640x480?text=Member+1"
+                            alt="Member 1 profile photo">
+                        <h3>Member Name 1</h3>
+                        <p>Assists with cultural events, volunteer coordination, and temple service activities.</p>
+                    </article>
+
+                    <article class="member-card member">
+                        <span class="role-badge">Member</span>
+                        <img class="profile-photo" src="https://via.placeholder.com/640x480?text=Member+2"
+                            alt="Member 2 profile photo">
+                        <h3>Member Name 2</h3>
+                        <p>Supports devotional events and youth programs throughout the year.</p>
+                    </article>
+
+                    <article class="member-card member">
+                        <span class="role-badge">Member</span>
+                        <img class="profile-photo" src="https://via.placeholder.com/640x480?text=Member+3"
+                            alt="Member 3 profile photo">
+                        <h3>Member Name 3</h3>
+                        <p>Contributes to outreach, logistics, and community development initiatives.</p>
+                    </article>
+
+                    <article class="member-card member">
+                        <span class="role-badge">Member</span>
+                        <img class="profile-photo" src="https://via.placeholder.com/640x480?text=Member+4"
+                            alt="Member 4 profile photo">
+                        <h3>Member Name 4</h3>
+                        <p>Helps with operations, event preparation, and guest support services.</p>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 Mont-Ida Shri Ganesh Mandir. All rights reserved.</p>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+
+</html>

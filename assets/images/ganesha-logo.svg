@@ -1,0 +1,19 @@
+<svg width="96" height="96" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Ganesha Logo</title>
+  <desc id="desc">Stylized line-art icon of Lord Ganesha</desc>
+  <g fill="none" stroke="#2A1F18" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="48" cy="48" r="45" stroke-width="2"/>
+    <path d="M48 17c6 0 10 4 10 10 0 4-2 7-5 9" stroke-width="3"/>
+    <path d="M48 17c-6 0-10 4-10 10 0 4 2 7 5 9" stroke-width="3"/>
+    <path d="M30 37c-7 2-10 9-8 15 2 6 8 9 14 8" stroke-width="2.4"/>
+    <path d="M66 37c7 2 10 9 8 15-2 6-8 9-14 8" stroke-width="2.4"/>
+    <path d="M42 45c0-3 3-5 6-5s6 2 6 5" stroke-width="2.4"/>
+    <path d="M48 46c-6 0-11 5-11 11 0 5 3 9 7 11" stroke-width="3"/>
+    <path d="M48 46c8 0 15 6 15 14 0 8-6 15-14 15-3 0-6-1-8-3" stroke-width="3"/>
+    <path d="M33 64c4 2 7 4 9 8" stroke-width="2.2"/>
+    <path d="M62 63c-4 3-7 5-9 9" stroke-width="2.2"/>
+    <circle cx="41" cy="43" r="1.8" fill="#2A1F18" stroke="none"/>
+    <circle cx="55" cy="43" r="1.8" fill="#2A1F18" stroke="none"/>
+    <path d="M48 30v3" stroke-width="2.2"/>
+  </g>
+</svg>

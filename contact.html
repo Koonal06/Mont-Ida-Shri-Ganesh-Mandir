@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Mont-Ida Shri Ganesh Mandir</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <a class="logo" href="index.html" aria-label="Mont-Ida Shri Ganesh Mandir Home">
+            <img src="assets/images/logo.png" onerror="this.onerror=null;this.src='assets/images/ganesha-logo.svg';" alt="Ganesha logo">
+            <span>Mont-Ida Shri Ganesh Mandir</span>
+        </a>
+        <button class="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false" aria-controls="site-nav">Menu</button>
+        <ul class="nav-links" id="site-nav">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="events.html">Events</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="members.html">Members</a></li>
+            <li><a href="contact.html" class="active">Contact</a></li>
+        </ul>
+    </nav>
+
+    <section class="page-hero page-hero--contact">
+        <div class="overlay"></div>
+        <div class="hero-content container">
+            <h1>Contact Us</h1>
+            <p>Reach out for festival details, prayers, volunteering, and community activities.</p>
+        </div>
+        <div class="wave" aria-hidden="true">
+            <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M0,64 C180,130 420,0 620,52 C860,114 1020,28 1200,74 L1200,120 L0,120 Z"></path>
+            </svg>
+        </div>
+    </section>
+
+    <section class="page-section contact">
+        <div class="container">
+            <h1>Contact Us</h1>
+            <p class="section-intro">Reach out for festival details, prayers, volunteering, and community activities.</p>
+
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <h3>Address</h3>
+                    <p>Mont-Ida, Mauritius</p>
+                </div>
+                <div class="contact-card">
+                    <h3>Phone</h3>
+                    <p>+230 0000 0000</p>
+                </div>
+                <div class="contact-card">
+                    <h3>Email</h3>
+                    <p>info@montidamandir.org</p>
+                </div>
+            </div>
+
+            <form class="contact-form" id="contact-form" action="https://formspree.io/f/mykdepgv" method="post">
+                <input type="hidden" name="_subject" value="New Website Contact Message">
+
+                <label for="name">Name</label>
+                <input id="name" name="name" type="text" required>
+
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" required>
+
+                <label for="message">Message</label>
+                <textarea id="message" name="message" rows="5" required></textarea>
+
+                <button type="submit" class="btn" id="contact-submit">Send Message</button>
+                <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
+            </form>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 Mont-Ida Shri Ganesh Mandir. All rights reserved.</p>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+
+</html>
+
+

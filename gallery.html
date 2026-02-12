@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery - Mont-Ida Shri Ganesh Mandir</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <a class="logo" href="index.html" aria-label="Mont-Ida Shri Ganesh Mandir Home">
+            <img src="assets/images/logo.png" onerror="this.onerror=null;this.src='assets/images/ganesha-logo.svg';"
+                alt="Ganesha logo">
+            <span>Mont-Ida Shri Ganesh Mandir</span>
+        </a>
+        <button class="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false"
+            aria-controls="site-nav">Menu</button>
+        <ul class="nav-links" id="site-nav">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="events.html">Events</a></li>
+            <li><a href="gallery.html" class="active">Gallery</a></li>
+            <li><a href="members.html">Members</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <section class="page-hero page-hero--gallery">
+        <div class="overlay"></div>
+        <div class="hero-content container">
+            <h1>Gallery</h1>
+            <p>Explore moments from our temple celebrations and community life.</p>
+        </div>
+        <div class="wave" aria-hidden="true">
+            <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M0,64 C180,130 420,0 620,52 C860,114 1020,28 1200,74 L1200,120 L0,120 Z"></path>
+            </svg>
+        </div>
+    </section>
+
+    <section class="page-section gallery-pro">
+        <div class="container">
+            <h1>Gallery</h1>
+            <p class="section-intro">Explore moments from our temple celebrations and community life.</p>
+
+            <div class="gallery-filters" id="gallery-filters" role="group" aria-label="Filter gallery">
+                <button class="gallery-filter-btn active" type="button" data-filter="all">All</button>
+                <button class="gallery-filter-btn" type="button" data-filter="festival-decorations">Festival
+                    Decorations</button>
+                <button class="gallery-filter-btn" type="button" data-filter="cultural-dance">Cultural Dance</button>
+                <button class="gallery-filter-btn" type="button" data-filter="prayer-ceremony">Prayer Ceremony</button>
+                <button class="gallery-filter-btn" type="button" data-filter="community-gathering">Community
+                    Gathering</button>
+                <button class="gallery-filter-btn" type="button" data-filter="diwali-lights">Diwali Lights</button>
+                <button class="gallery-filter-btn" type="button" data-filter="youth-programs">Youth Programs</button>
+            </div>
+
+            <div class="gallery-grid" id="gallery-grid">
+                <article class="gallery-card" data-category="festival-decorations">
+                    <button class="gallery-item" type="button" data-caption="Festival Decorations">
+                        <img src="assets/images/festival decoration.jpeg" alt="Mandir decorated with flowers and lights"
+                            loading="lazy">
+                        <div class="gallery-card-content">
+                            <h3>Festival Decorations</h3>
+                            <p>Traditional floral and light arrangements for major celebrations.</p>
+                        </div>
+                    </button>
+                </article>
+
+                <article class="gallery-card" data-category="cultural-dance">
+                    <button class="gallery-item" type="button" data-caption="Cultural Dance">
+                        <img src="assets/images/cultural dance.jpeg" alt="Community performing cultural dance"
+                            loading="lazy">
+                        <div class="gallery-card-content">
+                            <h3>Cultural Dance</h3>
+                            <p>Devotional dance performances by youth and community groups.</p>
+                        </div>
+                    </button>
+                </article>
+
+                <article class="gallery-card" data-category="prayer-ceremony">
+                    <button class="gallery-item" type="button" data-caption="Prayer Ceremony">
+                        <img src="assets/images/prayer cremony.jpeg" alt="Prayer ceremony in front of Ganesh murti"
+                            loading="lazy">
+                        <div class="gallery-card-content">
+                            <h3>Prayer Ceremony</h3>
+                            <p>Peaceful moments during daily prayers and special poojas.</p>
+                        </div>
+                    </button>
+                </article>
+
+                <article class="gallery-card" data-category="community-gathering">
+                    <button class="gallery-item" type="button" data-caption="Community Gathering">
+                        <img src="assets/images/community gathering.jpeg" alt="Families and devotees gathered at temple"
+                            loading="lazy">
+                        <div class="gallery-card-content">
+                            <h3>Community Gathering</h3>
+                            <p>Shared meals, service, and togetherness across all age groups.</p>
+                        </div>
+                    </button>
+                </article>
+
+                <article class="gallery-card" data-category="diwali-lights">
+                    <button class="gallery-item" type="button" data-caption="Diwali Lights">
+                        <img src="assets/images/diwali.jpeg" alt="Rows of lamps and decorative Diwali lights"
+                            loading="lazy">
+                        <div class="gallery-card-content">
+                            <h3>Diwali Lights</h3>
+                            <p>Bright diyas and lights celebrating joy, prosperity, and devotion.</p>
+                        </div>
+                    </button>
+                </article>
+
+                <article class="gallery-card" data-category="youth-programs">
+                    <button class="gallery-item" type="button" data-caption="Youth Programs">
+                        <img src="assets/images/youth programs.jpeg"
+                            alt="Children participating in cultural learning session" loading="lazy">
+                        <div class="gallery-card-content">
+                            <h3>Youth Programs</h3>
+                            <p>Workshops and activities to connect younger generations with culture.</p>
+                        </div>
+                    </button>
+                </article>
+
+                <article class="gallery-card" data-category="prayer-ceremony">
+                    <button class="gallery-item" type="button" data-caption="Shubh Vijaya Dashami">
+                        <img src="assets/images/SHUBH VIJAYA DASHAMI.png" alt="Shubh Vijaya Dashami ceremony"
+                            loading="lazy">
+                        <div class="gallery-card-content">
+                            <h3>Shubh Vijaya Dashami</h3>
+                            <p>On this sacred Vijaya Dashami, may Maa Durga's victory over evil inspire us to walk the
+                                path of truth, courage, and righteousness.</p>
+                        </div>
+
+                    </button>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <div class="lightbox" id="lightbox" aria-hidden="true">
+        <button class="lightbox-close" type="button" aria-label="Close image">Close</button>
+        <img id="lightbox-image" src="" alt="Expanded gallery image">
+        <p id="lightbox-caption"></p>
+    </div>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 Mont-Ida Shri Ganesh Mandir. All rights reserved.</p>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+
+</html>
