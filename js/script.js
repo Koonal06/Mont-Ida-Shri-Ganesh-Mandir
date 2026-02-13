@@ -1,5 +1,21 @@
 const eventDate = new Date("September 19, 2026 00:00:00").getTime();
 
+function normalizeHomeUrl() {
+    const isWebProtocol = window.location.protocol === "http:" || window.location.protocol === "https:";
+    if (!isWebProtocol) {
+        return;
+    }
+
+    const currentPath = window.location.pathname;
+    if (!/\/index\.html$/i.test(currentPath)) {
+        return;
+    }
+
+    const normalizedPath = currentPath.replace(/\/index\.html$/i, "/");
+    const nextUrl = `${normalizedPath}${window.location.search}${window.location.hash}`;
+    window.history.replaceState(null, "", nextUrl);
+}
+
 function initializeNavigation() {
     const navToggle = document.querySelector(".nav-toggle");
     const navLinks = document.querySelector(".nav-links");
@@ -271,6 +287,14 @@ function initializeContactForm() {
     });
 }
 
+function initializePlaceholderLinks() {
+    document.querySelectorAll('a[href="#"]').forEach((link) => {
+        link.addEventListener("click", (event) => {
+            event.preventDefault();
+        });
+    });
+}
+
 function initializeSectionReveal() {
     const sections = document.querySelectorAll("section");
 
@@ -309,7 +333,9 @@ function initializeSectionReveal() {
     });
 }
 
+normalizeHomeUrl();
 initializeNavigation();
+initializePlaceholderLinks();
 initializeEvents();
 initializeGalleryFilters();
 initializeGalleryLightbox();
@@ -317,4 +343,3 @@ initializeContactForm();
 initializeSectionReveal();
 setInterval(updateCountdown, 1000);
 updateCountdown();
-
