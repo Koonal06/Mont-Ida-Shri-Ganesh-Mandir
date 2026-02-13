@@ -16,6 +16,32 @@ function normalizeHomeUrl() {
     window.history.replaceState(null, "", nextUrl);
 }
 
+function normalizePageUrls() {
+    const isWebProtocol = window.location.protocol === "http:" || window.location.protocol === "https:";
+    if (!isWebProtocol) {
+        return;
+    }
+
+    const path = window.location.pathname;
+    const pageMap = {
+        "/about.html": "/about/",
+        "/event.html": "/events/",
+        "/events.html": "/events/",
+        "/gallery.html": "/gallery/",
+        "/members.html": "/members/",
+        "/contact.html": "/contact/"
+    };
+
+    for (const [from, to] of Object.entries(pageMap)) {
+        if (path.toLowerCase().endsWith(from)) {
+            const nextPath = path.slice(0, path.length - from.length) + to;
+            const nextUrl = `${nextPath}${window.location.search}${window.location.hash}`;
+            window.history.replaceState(null, "", nextUrl);
+            return;
+        }
+    }
+}
+
 function initializeNavigation() {
     const navToggle = document.querySelector(".nav-toggle");
     const navLinks = document.querySelector(".nav-links");
@@ -334,6 +360,7 @@ function initializeSectionReveal() {
 }
 
 normalizeHomeUrl();
+normalizePageUrls();
 initializeNavigation();
 initializePlaceholderLinks();
 initializeEvents();
