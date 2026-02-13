@@ -316,7 +316,10 @@ function initializeContactForm() {
 function initializePlaceholderLinks() {
     document.querySelectorAll('a[href="#"]').forEach((link) => {
         link.addEventListener("click", (event) => {
-            event.preventDefault();
+            const href = (link.getAttribute("href") || "").trim();
+            if (href === "#" || href === "") {
+                event.preventDefault();
+            }
         });
     });
 }
