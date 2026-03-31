@@ -2301,6 +2301,305 @@ main {
     background: rgba(203, 107, 49, 0.08);
 }
 
+.admin-layout--occasion {
+    margin-top: 1.4rem;
+    align-items: start;
+}
+
+.admin-grid--occasion-dates {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.admin-target-grid,
+.admin-intensity-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9.2rem, 1fr));
+    gap: 0.75rem;
+}
+
+.admin-choice-card {
+    position: relative;
+    display: grid;
+    gap: 0.3rem;
+    min-height: 5.2rem;
+    padding: 0.85rem 0.95rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(101, 63, 39, 0.14);
+    background: rgba(255, 252, 246, 0.9);
+    cursor: pointer;
+    transition: border-color 0.24s ease, box-shadow 0.24s ease, transform 0.24s ease, background 0.24s ease;
+}
+
+.admin-choice-card input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.admin-choice-card strong,
+.admin-choice-card span {
+    pointer-events: none;
+}
+
+.admin-choice-card strong {
+    color: var(--deep-brown);
+    font-size: 0.95rem;
+}
+
+.admin-choice-card span {
+    color: var(--muted);
+    font-size: 0.82rem;
+    line-height: 1.45;
+}
+
+.admin-choice-card:has(input:checked) {
+    border-color: rgba(203, 107, 49, 0.3);
+    background: linear-gradient(180deg, rgba(255, 248, 240, 0.96), rgba(255, 241, 228, 0.94));
+    box-shadow: 0 14px 28px rgba(101, 49, 26, 0.08);
+    transform: translateY(-1px);
+}
+
+.admin-occasion-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.admin-occasion-preview {
+    display: grid;
+    gap: 0.85rem;
+    margin-top: 1rem;
+}
+
+.occasion-preview-stage {
+    position: relative;
+    min-height: 15rem;
+    overflow: hidden;
+    border-radius: 1.3rem;
+    border: 1px solid rgba(101, 63, 39, 0.14);
+    background:
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.42), transparent 22%),
+        linear-gradient(180deg, rgba(255, 250, 242, 0.96), rgba(244, 228, 204, 0.9));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.46);
+}
+
+.occasion-preview-content {
+    position: absolute;
+    inset: auto 1rem 1rem 1rem;
+    z-index: 0;
+    display: grid;
+    gap: 0.3rem;
+    padding: 1rem 1.1rem;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.82);
+    border: 1px solid rgba(101, 63, 39, 0.12);
+}
+
+.occasion-preview-content strong {
+    color: var(--deep-brown);
+}
+
+.occasion-preview-content span {
+    color: var(--muted);
+    font-size: 0.88rem;
+}
+
+.admin-occasion-library {
+    display: grid;
+    gap: 1rem;
+}
+
+.admin-occasion-card .admin-item-head {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.admin-occasion-targets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+}
+
+.admin-occasion-targets span,
+.admin-occasion-card .admin-meta span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.9rem;
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    background: rgba(203, 107, 49, 0.08);
+    color: var(--brand-deep);
+    font-size: 0.76rem;
+    font-weight: 700;
+}
+
+.occasion-animation-layer {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 36;
+    --travel-distance: 120vh;
+}
+
+.occasion-animation-layer.is-preview {
+    position: absolute;
+    z-index: 1;
+    --travel-distance: 120%;
+}
+
+.occasion-particle {
+    position: absolute;
+    display: block;
+    pointer-events: none;
+}
+
+.occasion-particle--fall {
+    top: -12%;
+    left: var(--left);
+    width: var(--size);
+    height: calc(var(--size) * 1.45);
+    opacity: var(--opacity);
+    background: var(--hue);
+    animation: occasion-fall var(--duration) linear infinite;
+    animation-delay: var(--delay);
+    transform: translate3d(0, 0, 0) rotate(0deg);
+}
+
+.occasion-particle--flower-petals {
+    border-radius: 70% 45% 65% 55%;
+    filter: drop-shadow(0 0 0.28rem rgba(255, 188, 162, 0.28));
+}
+
+.occasion-particle--confetti {
+    border-radius: 0.25rem;
+    width: calc(var(--size) * 0.7);
+    height: calc(var(--size) * 1.2);
+}
+
+.occasion-particle--snowflakes {
+    width: var(--size);
+    height: var(--size);
+    border-radius: 50%;
+    box-shadow: 0 0 0.35rem rgba(255, 255, 255, 0.32);
+}
+
+.occasion-particle--sparkle {
+    left: var(--left);
+    top: var(--top);
+    width: var(--size);
+    height: var(--size);
+    opacity: var(--opacity);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 248, 220, 0.95), rgba(255, 218, 128, 0.3) 58%, transparent 72%);
+    animation: occasion-twinkle var(--duration) ease-in-out infinite;
+    animation-delay: var(--delay);
+}
+
+.occasion-particle--floating-light {
+    bottom: -12%;
+    left: var(--left);
+    width: calc(var(--size) * 1.2);
+    height: calc(var(--size) * 1.2);
+    border-radius: 50%;
+    opacity: var(--opacity);
+    background: radial-gradient(circle, rgba(255, 223, 158, 0.92), rgba(255, 223, 158, 0.22) 60%, transparent 74%);
+    filter: blur(0.04rem);
+    animation: occasion-rise var(--duration) linear infinite;
+    animation-delay: var(--delay);
+}
+
+.occasion-diya-strip {
+    position: absolute;
+    inset: auto 1rem 0.8rem 1rem;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: end;
+    gap: 0.8rem;
+}
+
+.occasion-diya {
+    position: relative;
+    width: 1.25rem;
+    height: 0.85rem;
+    border-radius: 0.9rem 0.9rem 0.45rem 0.45rem;
+    background: linear-gradient(180deg, #b65a2b, #7c3217);
+    box-shadow: 0 0 0.45rem rgba(247, 157, 91, 0.28);
+    transform: translateY(var(--offset));
+}
+
+.occasion-diya::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0.5rem;
+    width: 0.48rem;
+    height: 0.78rem;
+    border-radius: 50% 50% 52% 52%;
+    background: radial-gradient(circle at 50% 22%, #fff4cf, #ffcf66 55%, #ff8a3d 86%);
+    transform: translateX(-50%);
+    animation: occasion-glow var(--duration, 2.8s) ease-in-out infinite;
+    animation-delay: var(--delay, 0s);
+    box-shadow: 0 0 0.95rem rgba(255, 193, 89, 0.42);
+}
+
+.occasion-diya::after {
+    content: "";
+    position: absolute;
+    inset: -0.8rem -0.8rem auto -0.8rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 201, 110, 0.24), transparent 70%);
+}
+
+@keyframes occasion-fall {
+    from {
+        transform: translate3d(0, 0, 0) rotate(0deg);
+    }
+
+    to {
+        transform: translate3d(var(--drift), var(--travel-distance), 0) rotate(var(--spin));
+    }
+}
+
+@keyframes occasion-rise {
+    from {
+        transform: translate3d(0, 0, 0) scale(0.84);
+    }
+
+    to {
+        transform: translate3d(var(--drift), -115%, 0) scale(1.08);
+    }
+}
+
+@keyframes occasion-twinkle {
+    0%,
+    100% {
+        opacity: 0.16;
+        transform: scale(0.7);
+    }
+
+    40% {
+        opacity: 0.95;
+        transform: scale(1);
+    }
+}
+
+@keyframes occasion-glow {
+    0%,
+    100% {
+        transform: translateX(-50%) scale(0.88);
+        opacity: 0.82;
+    }
+
+    50% {
+        transform: translateX(-50%) scale(1.05);
+        opacity: 1;
+    }
+}
+
 .site-footer {
     margin-top: auto;
     padding-top: 3rem;

@@ -137,6 +137,11 @@
                     <strong id="admin-last-sync">Waiting</strong>
                     <p>The dashboard refreshes automatically after each content change.</p>
                 </article>
+                <article class="admin-stat-card">
+                    <span>Occasion Animations</span>
+                    <strong id="admin-occasion-count">0</strong>
+                    <p>Seasonal animation settings available for pages across the website.</p>
+                </article>
             </div>
 
             <div class="admin-layout">
@@ -285,11 +290,167 @@
                     </article>
                 </div>
             </div>
+
+            <div class="admin-layout admin-layout--occasion">
+                <div class="admin-column">
+                    <article class="admin-card">
+                        <div class="admin-card-intro">
+                            <span class="eyebrow">Occasion Animations</span>
+                            <h2>Create a seasonal website animation</h2>
+                            <p>Add lightweight festive effects for temple occasions, choose where they should appear,
+                                and preview the motion before saving it live.</p>
+                        </div>
+
+                        <form id="occasion-form" class="admin-form">
+                            <input id="occasion-id" name="id" type="hidden">
+
+                            <div class="admin-grid">
+                                <div class="field">
+                                    <label for="occasion-title">Occasion title</label>
+                                    <input id="occasion-title" name="title" type="text" placeholder="Example: Ganesh Chaturthi Welcome"
+                                        required>
+                                </div>
+                                <div class="field">
+                                    <label for="occasion-animation-type">Animation type</label>
+                                    <select id="occasion-animation-type" name="animation_type" required>
+                                        <option value="" selected disabled>Select an animation type</option>
+                                        <option value="flower-petals">Falling Flower Petals</option>
+                                        <option value="glowing-diyas">Glowing Diyas</option>
+                                        <option value="sparkles">Sparkles</option>
+                                        <option value="floating-lights">Floating Lights</option>
+                                        <option value="confetti">Confetti</option>
+                                        <option value="snowflakes">Snowflakes</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="admin-grid admin-grid--occasion-dates">
+                                <div class="field">
+                                    <label for="occasion-start-date">Start date</label>
+                                    <input id="occasion-start-date" name="start_date" type="date" required>
+                                </div>
+                                <div class="field">
+                                    <label for="occasion-end-date">End date</label>
+                                    <input id="occasion-end-date" name="end_date" type="date" required>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label>Target pages</label>
+                                <div class="admin-target-grid" id="occasion-target-pages">
+                                    <label class="admin-choice-card">
+                                        <input type="checkbox" name="target_pages" value="all" checked>
+                                        <strong>All Pages</strong>
+                                        <span>Use the same festive effect everywhere on the site.</span>
+                                    </label>
+                                    <label class="admin-choice-card">
+                                        <input type="checkbox" name="target_pages" value="home">
+                                        <strong>Home</strong>
+                                        <span>Show the effect on the landing page.</span>
+                                    </label>
+                                    <label class="admin-choice-card">
+                                        <input type="checkbox" name="target_pages" value="about">
+                                        <strong>About</strong>
+                                        <span>Show the effect on the mandir story page.</span>
+                                    </label>
+                                    <label class="admin-choice-card">
+                                        <input type="checkbox" name="target_pages" value="events">
+                                        <strong>Events</strong>
+                                        <span>Display the animation around upcoming celebrations.</span>
+                                    </label>
+                                    <label class="admin-choice-card">
+                                        <input type="checkbox" name="target_pages" value="gallery">
+                                        <strong>Gallery</strong>
+                                        <span>Bring movement to the photo and video gallery.</span>
+                                    </label>
+                                    <label class="admin-choice-card">
+                                        <input type="checkbox" name="target_pages" value="members">
+                                        <strong>Members</strong>
+                                        <span>Show it on the temple community page.</span>
+                                    </label>
+                                    <label class="admin-choice-card">
+                                        <input type="checkbox" name="target_pages" value="contact">
+                                        <strong>Contact</strong>
+                                        <span>Use it on the reach-out and location page.</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label>Intensity</label>
+                                <div class="admin-intensity-grid" id="occasion-intensity-grid">
+                                    <label class="admin-choice-card">
+                                        <input type="radio" name="intensity" value="light">
+                                        <strong>Light</strong>
+                                        <span>Subtle motion for calm pages and minimal distraction.</span>
+                                    </label>
+                                    <label class="admin-choice-card">
+                                        <input type="radio" name="intensity" value="medium" checked>
+                                        <strong>Medium</strong>
+                                        <span>Balanced festive movement for most occasions.</span>
+                                    </label>
+                                    <label class="admin-choice-card">
+                                        <input type="radio" name="intensity" value="heavy">
+                                        <strong>Heavy</strong>
+                                        <span>Richer movement for major celebrations and festival days.</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <label class="admin-inline-check">
+                                <input id="occasion-enabled" type="checkbox" name="is_enabled" checked>
+                                Enable this animation when its date range is active
+                            </label>
+
+                            <p class="helper-text admin-field-note">If two enabled occasion animations overlap on the
+                                same page, the most recently starting one will be shown first.</p>
+
+                            <div class="admin-occasion-actions">
+                                <button class="btn btn-outline btn-small" id="occasion-preview-button" type="button">Preview Animation</button>
+                                <button class="btn" type="submit">Save Occasion Animation</button>
+                                <button class="btn btn-outline btn-small admin-hidden" id="occasion-cancel-button"
+                                    type="button">Cancel Edit</button>
+                            </div>
+
+                            <p class="status-note" id="occasion-form-status"></p>
+                        </form>
+
+                        <div class="admin-occasion-preview">
+                            <div class="occasion-preview-stage" id="occasion-preview-stage">
+                                <div class="occasion-preview-content">
+                                    <strong id="occasion-preview-title">Preview the festive effect before saving</strong>
+                                    <span id="occasion-preview-meta">Choose an animation type, pages, and intensity, then click
+                                        Preview Animation.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="admin-column">
+                    <article class="admin-card">
+                        <div class="admin-card-intro">
+                            <span class="eyebrow">Animation Library</span>
+                            <h2>Manage active and upcoming occasion effects</h2>
+                            <p>Edit an existing festival animation, enable or pause it, or remove it when the occasion
+                                has passed.</p>
+                        </div>
+
+                        <div class="upload-note">
+                            <p>Only enabled animations inside their date range appear on the matching public pages. If
+                                no active occasion animation exists, the website stays clean and animation-free.</p>
+                        </div>
+
+                        <div class="admin-occasion-library" id="admin-occasion-list"></div>
+                    </article>
+                </div>
+            </div>
         </section>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/supabase-config.js"></script>
+    <script src="../js/occasion-animations.js"></script>
     <script src="../js/admin.js"></script>
 </body>
 

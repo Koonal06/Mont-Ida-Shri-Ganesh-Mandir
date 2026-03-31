@@ -12,13 +12,17 @@
     const adminEmail = document.getElementById("admin-email");
     const eventForm = document.getElementById("event-form");
     const galleryForm = document.getElementById("gallery-form");
+    const occasionForm = document.getElementById("occasion-form");
     const eventStatus = document.getElementById("event-form-status");
     const galleryStatus = document.getElementById("gallery-form-status");
+    const occasionStatus = document.getElementById("occasion-form-status");
     const eventsList = document.getElementById("admin-events-list");
     const galleryList = document.getElementById("admin-gallery-list");
+    const occasionList = document.getElementById("admin-occasion-list");
     const galleryPagination = document.getElementById("admin-gallery-pagination");
     const eventCountValue = document.getElementById("admin-event-count");
     const galleryCountValue = document.getElementById("admin-gallery-count");
+    const occasionCountValue = document.getElementById("admin-occasion-count");
     const lastSyncValue = document.getElementById("admin-last-sync");
     const passwordInput = document.getElementById("admin-password-input");
     const passwordToggle = document.getElementById("admin-password-toggle");
@@ -29,6 +33,19 @@
     const galleryPublishCheckbox = document.getElementById("gallery-published");
     const galleryScheduleField = document.getElementById("gallery-schedule-field");
     const galleryPublishAtInput = document.getElementById("gallery-publish-at");
+    const occasionIdInput = document.getElementById("occasion-id");
+    const occasionTitleInput = document.getElementById("occasion-title");
+    const occasionTypeInput = document.getElementById("occasion-animation-type");
+    const occasionStartInput = document.getElementById("occasion-start-date");
+    const occasionEndInput = document.getElementById("occasion-end-date");
+    const occasionEnabledCheckbox = document.getElementById("occasion-enabled");
+    const occasionPreviewButton = document.getElementById("occasion-preview-button");
+    const occasionCancelButton = document.getElementById("occasion-cancel-button");
+    const occasionPreviewStage = document.getElementById("occasion-preview-stage");
+    const occasionPreviewTitle = document.getElementById("occasion-preview-title");
+    const occasionPreviewMeta = document.getElementById("occasion-preview-meta");
+    const occasionTargetInputs = Array.from(document.querySelectorAll('input[name="target_pages"]'));
+    const occasionIntensityInputs = Array.from(document.querySelectorAll('input[name="intensity"]'));
     const adminRoute = document.body?.dataset?.adminRoute || "login";
     const isDashboardRoute = adminRoute === "dashboard";
     const isLoginRoute = adminRoute === "login";
@@ -80,6 +97,7 @@
 
     const client = supabaseLib.createClient(config.url, config.anonKey);
     const bucket = String(config.bucket || "site-media").trim() || "site-media";
+    const occasionAnimationLibrary = window.siteOccasionAnimations;
     const galleryCategories = [
         { value: "festival-decorations", label: "Festival Decorations" },
         { value: "cultural-dance", label: "Cultural Dance" },
@@ -89,9 +107,15 @@
         { value: "youth-programs", label: "Youth Programs" }
     ];
     const allowedGalleryCategories = new Set(galleryCategories.map((item) => item.value));
+    const occasionAnimationTypes = occasionAnimationLibrary?.animationTypes || [];
+    const occasionIntensityLevels = occasionAnimationLibrary?.intensityLevels || [];
+    const occasionTargetPages = occasionAnimationLibrary?.targetPages || [];
+    const allowedOccasionAnimationTypes = new Set(occasionAnimationTypes.map((item) => item.value));
+    const allowedOccasionIntensityLevels = new Set(occasionIntensityLevels.map((item) => item.value));
     const galleryPostsPerPage = 6;
     let galleryPage = 1;
     const expandedGalleryPosts = new Set();
+    let occasionPreviewController = null;
 
     const escapeHtml = (value) =>
         String(value ?? "")
@@ -188,6 +212,192 @@
             .join(" ") || "Community Gathering";
     };
 
+    const formatDateLabel = (value) => {
+        if (!value) {
+            return "";
+        }
+
+        return new Intl.DateTimeFormat("en-MU", {
+            dateStyle: "medium",
+            timeZone: "Indian/Mauritius"
+        }).format(new Date(`${value}T00:00:00`));
+    };
+
+    const getCheckedOccasionPages = () =>
+        occasionTargetInputs
+            .filter((input) => input.checked)
+            .map((input) => input.value);
+
+    const getSelectedOccasionIntensity = () =>
+        occasionIntensityInputs.find((input) => input.checked)?.value || "medium";
+
+    const setOccasionTargetSelection = (values) => {
+        const normalizedPages = occasionAnimationLibrary?.normalizeTargetPages(values || []) || ["all"];
+        const selectedValues = new Set(normalizedPages.length > 0 ? normalizedPages : ["all"]);
+
+        occasionTargetInputs.forEach((input) => {
+            input.checked = selectedValues.has(input.value);
+        });
+
+        if (!occasionTargetInputs.some((input) => input.checked)) {
+            const allInput = occasionTargetInputs.find((input) => input.value === "all");
+
+            if (allInput) {
+                allInput.checked = true;
+            }
+        }
+    };
+
+    const syncOccasionTargetSelection = (changedInput) => {
+        if (!changedInput) {
+            return;
+        }
+
+        if (changedInput.value === "all" && changedInput.checked) {
+            occasionTargetInputs.forEach((input) => {
+                if (input !== changedInput) {
+                    input.checked = false;
+                }
+            });
+            return;
+        }
+
+        if (changedInput.value !== "all" && changedInput.checked) {
+            const allInput = occasionTargetInputs.find((input) => input.value === "all");
+
+            if (allInput) {
+                allInput.checked = false;
+            }
+        }
+
+        if (!occasionTargetInputs.some((input) => input.checked)) {
+            const allInput = occasionTargetInputs.find((input) => input.value === "all");
+
+            if (allInput) {
+                allInput.checked = true;
+            }
+        }
+    };
+
+    const getOccasionFormValue = () => ({
+        id: String(occasionIdInput?.value || "").trim(),
+        title: String(occasionTitleInput?.value || "").trim(),
+        animation_type: String(occasionTypeInput?.value || "").trim(),
+        start_date: String(occasionStartInput?.value || "").trim(),
+        end_date: String(occasionEndInput?.value || "").trim(),
+        target_pages: getCheckedOccasionPages(),
+        intensity: getSelectedOccasionIntensity(),
+        is_enabled: Boolean(occasionEnabledCheckbox?.checked)
+    });
+
+    const updateOccasionPreviewCopy = (headline, meta) => {
+        if (occasionPreviewTitle) {
+            occasionPreviewTitle.textContent = headline;
+        }
+
+        if (occasionPreviewMeta) {
+            occasionPreviewMeta.textContent = meta;
+        }
+    };
+
+    const destroyOccasionPreview = () => {
+        occasionPreviewController?.destroy?.();
+        occasionPreviewController = null;
+    };
+
+    const previewOccasionAnimation = (value, options = {}) => {
+        if (!occasionPreviewStage || !occasionAnimationLibrary) {
+            return false;
+        }
+
+        destroyOccasionPreview();
+
+        const normalizedValue = {
+            ...value,
+            target_pages: occasionAnimationLibrary.normalizeTargetPages(value?.target_pages || []),
+            intensity: String(value?.intensity || "medium"),
+            is_enabled: Boolean(value?.is_enabled ?? true)
+        };
+
+        const validationError = occasionAnimationLibrary.validateOccasionAnimation(normalizedValue);
+
+        if (validationError) {
+            updateOccasionPreviewCopy(
+                "Preview the festive effect before saving",
+                "Choose an animation type, pages, and intensity, then click Preview Animation."
+            );
+
+            if (!options.silent) {
+                setStatus(occasionStatus, validationError, "error");
+            }
+
+            return false;
+        }
+
+        occasionPreviewController = occasionAnimationLibrary.mount(occasionPreviewStage, normalizedValue, { preview: true });
+        const targetLabels = normalizedValue.target_pages
+            .map((page) => occasionAnimationLibrary.getPageLabel(page))
+            .join(", ");
+
+        updateOccasionPreviewCopy(
+            normalizedValue.title,
+            `${occasionAnimationLibrary.getAnimationLabel(normalizedValue.animation_type)} on ${targetLabels} with ${occasionAnimationLibrary.getIntensityLabel(normalizedValue.intensity).toLowerCase()} intensity.`
+        );
+
+        if (!options.silent && options.successMessage) {
+            setStatus(occasionStatus, options.successMessage, "success");
+        }
+
+        return true;
+    };
+
+    const resetOccasionForm = () => {
+        occasionForm?.reset();
+
+        if (occasionIdInput) {
+            occasionIdInput.value = "";
+        }
+
+        if (occasionEnabledCheckbox) {
+            occasionEnabledCheckbox.checked = true;
+        }
+
+        const mediumIntensityInput = occasionIntensityInputs.find((input) => input.value === "medium");
+        if (mediumIntensityInput) {
+            mediumIntensityInput.checked = true;
+        }
+
+        setOccasionTargetSelection(["all"]);
+        destroyOccasionPreview();
+        updateOccasionPreviewCopy(
+            "Preview the festive effect before saving",
+            "Choose an animation type, pages, and intensity, then click Preview Animation."
+        );
+        occasionCancelButton?.classList.add("admin-hidden");
+    };
+
+    const populateOccasionForm = (item) => {
+        if (!occasionForm || !item) {
+            return;
+        }
+
+        occasionIdInput.value = item.id || "";
+        occasionTitleInput.value = item.title || "";
+        occasionTypeInput.value = item.animation_type || "";
+        occasionStartInput.value = item.start_date || "";
+        occasionEndInput.value = item.end_date || "";
+        occasionEnabledCheckbox.checked = Boolean(item.is_enabled);
+        setOccasionTargetSelection(item.target_pages || ["all"]);
+
+        const selectedIntensity = String(item.intensity || "medium");
+        occasionIntensityInputs.forEach((input) => {
+            input.checked = input.value === selectedIntensity;
+        });
+
+        occasionCancelButton?.classList.remove("admin-hidden");
+        previewOccasionAnimation(item, { silent: true });
+    };
+
     const maskEmail = (value) => {
         const normalizedValue = String(value || "").trim();
 
@@ -215,6 +425,12 @@
     const isMissingPublishAtColumnError = (error) =>
         errorText(error).includes("publish_at") &&
         (errorText(error).includes("does not exist") || errorText(error).includes("column"));
+
+    const isMissingOccasionAnimationsTableError = (error) =>
+        errorText(error).includes("occasion_animations") &&
+        (errorText(error).includes("does not exist") ||
+            errorText(error).includes("relation") ||
+            errorText(error).includes("could not find the table"));
 
     const syncScheduleField = (checkbox, field, input) => {
         if (!checkbox || !field) {
@@ -696,6 +912,89 @@
         renderGalleryPagination(data.length, totalPages);
     };
 
+    const loadOccasionAnimations = async () => {
+        if (!occasionList) {
+            return;
+        }
+
+        const { data, error } = await client
+            .from("occasion_animations")
+            .select("id, title, animation_type, start_date, end_date, target_pages, intensity, is_enabled, created_at, updated_at")
+            .order("start_date", { ascending: false })
+            .order("created_at", { ascending: false });
+
+        if (error) {
+            setMetricValue(occasionCountValue, "0");
+            renderEmptyState(
+                occasionList,
+                isMissingOccasionAnimationsTableError(error)
+                    ? "Occasion animation support is not enabled in Supabase yet. Run the occasion animation SQL upgrade, then refresh this page."
+                    : (error.message || "Unable to load occasion animations right now.")
+            );
+            return;
+        }
+
+        const items = Array.isArray(data) ? data : [];
+        setMetricValue(occasionCountValue, String(items.length));
+
+        if (items.length === 0) {
+            renderEmptyState(occasionList, "No occasion animations yet. Create one above when you are ready to add a festive effect.");
+            return;
+        }
+
+        const today = occasionAnimationLibrary?.getCurrentDateInMauritius?.() || "";
+
+        occasionList.innerHTML = items.map((item) => {
+            const normalizedPages = occasionAnimationLibrary?.normalizeTargetPages(item.target_pages || []) || ["all"];
+            const matchesToday = Boolean(item.is_enabled && item.start_date <= today && item.end_date >= today);
+            const rangeLabel = `${formatDateLabel(item.start_date)} to ${formatDateLabel(item.end_date)}`;
+            const statusLabel = !item.is_enabled
+                ? "Paused"
+                : item.end_date < today
+                    ? "Ended"
+                    : item.start_date > today
+                        ? "Upcoming"
+                        : "Live";
+
+            return `
+                <article class="admin-item admin-occasion-card">
+                    <div class="admin-item-body">
+                        <div class="admin-item-head">
+                            <div>
+                                <h3>${escapeHtml(item.title)}</h3>
+                                <p>${escapeHtml(occasionAnimationLibrary?.getAnimationLabel(item.animation_type) || item.animation_type)}</p>
+                            </div>
+                            <div class="admin-meta">
+                                <span>${escapeHtml(statusLabel)}</span>
+                                <span>${escapeHtml(occasionAnimationLibrary?.getIntensityLabel(item.intensity) || item.intensity)}</span>
+                                <span>${escapeHtml(rangeLabel)}</span>
+                                ${matchesToday ? `<span>Showing now</span>` : ""}
+                            </div>
+                        </div>
+
+                        <div class="admin-occasion-targets">
+                            ${normalizedPages.map((page) => `<span>${escapeHtml(occasionAnimationLibrary?.getPageLabel(page) || page)}</span>`).join("")}
+                        </div>
+
+                        <div class="admin-actions">
+                            <button class="btn btn-outline btn-small" type="button" data-edit-occasion="${escapeHtml(item.id)}">
+                                Edit Animation
+                            </button>
+                            <button class="btn btn-outline btn-small" type="button"
+                                data-toggle-occasion="${escapeHtml(item.id)}"
+                                data-next-enabled="${item.is_enabled ? "false" : "true"}">
+                                ${item.is_enabled ? "Disable" : "Enable"}
+                            </button>
+                            <button class="btn btn-outline btn-small" type="button" data-delete-occasion="${escapeHtml(item.id)}">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </article>
+            `;
+        }).join("");
+    };
+
     const toggleGalleryPost = (itemId) => {
         if (!itemId) {
             return;
@@ -774,7 +1073,7 @@
     };
 
     const loadDashboard = async () => {
-        await Promise.all([loadEvents(), loadGallery()]);
+        await Promise.all([loadEvents(), loadGallery(), loadOccasionAnimations()]);
         stampLastSync();
     };
 
@@ -793,12 +1092,14 @@
             adminEmail.textContent = "";
             setMetricValue(eventCountValue, "0");
             setMetricValue(galleryCountValue, "0");
+            setMetricValue(occasionCountValue, "0");
             setMetricValue(lastSyncValue, "Waiting");
             galleryPage = 1;
             expandedGalleryPosts.clear();
             if (galleryPagination) {
                 galleryPagination.innerHTML = "";
             }
+            resetOccasionForm();
             markAdminReady();
             return;
         }
@@ -815,6 +1116,7 @@
 
             togglePanels(false);
             setStatus(loginStatus, "This account is not authorized for admin access.", "error");
+            setMetricValue(occasionCountValue, "0");
             markAdminReady();
             return;
         }
@@ -881,12 +1183,33 @@
 
     syncScheduleField(eventPublishCheckbox, eventScheduleField, eventPublishAtInput);
     syncScheduleField(galleryPublishCheckbox, galleryScheduleField, galleryPublishAtInput);
+    resetOccasionForm();
+
+    occasionForm?.addEventListener("change", (event) => {
+        const changedTargetInput = event.target.closest('input[name="target_pages"]');
+
+        if (changedTargetInput) {
+            syncOccasionTargetSelection(changedTargetInput);
+        }
+    });
+
+    occasionPreviewButton?.addEventListener("click", () => {
+        previewOccasionAnimation(getOccasionFormValue(), {
+            successMessage: "Preview updated."
+        });
+    });
+
+    occasionCancelButton?.addEventListener("click", () => {
+        resetOccasionForm();
+        setStatus(occasionStatus, "Occasion animation edit cancelled.", "success");
+    });
 
     logoutButton.addEventListener("click", async () => {
         await client.auth.signOut();
         togglePanels(false);
         setStatus(loginStatus, "Signed out.", "success");
         setStatus(dashboardStatus, "");
+        resetOccasionForm();
 
         if (isDashboardRoute) {
             window.location.replace(loginUrl);
@@ -894,6 +1217,71 @@
         }
 
         markAdminReady();
+    });
+
+    occasionForm?.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        setStatus(occasionStatus, "Saving occasion animation...");
+
+        try {
+            if (!occasionAnimationLibrary) {
+                throw new Error("The occasion animation library could not be loaded.");
+            }
+
+            const formValue = getOccasionFormValue();
+            const validationError = occasionAnimationLibrary.validateOccasionAnimation(formValue);
+
+            if (validationError) {
+                throw new Error(validationError);
+            }
+
+            if (!allowedOccasionAnimationTypes.has(formValue.animation_type)) {
+                throw new Error("Please choose one of the available animation types.");
+            }
+
+            if (!allowedOccasionIntensityLevels.has(formValue.intensity)) {
+                throw new Error("Please choose a valid intensity level.");
+            }
+
+            const payload = {
+                title: formValue.title,
+                animation_type: formValue.animation_type,
+                start_date: formValue.start_date,
+                end_date: formValue.end_date,
+                target_pages: occasionAnimationLibrary.normalizeTargetPages(formValue.target_pages),
+                intensity: formValue.intensity,
+                is_enabled: formValue.is_enabled
+            };
+
+            let error = null;
+
+            if (formValue.id) {
+                ({ error } = await client.from("occasion_animations").update(payload).eq("id", formValue.id));
+            } else {
+                ({ error } = await client.from("occasion_animations").insert(payload));
+            }
+
+            if (error) {
+                if (isMissingOccasionAnimationsTableError(error)) {
+                    throw new Error("Occasion animation support is not enabled in Supabase yet. Run the occasion animation SQL upgrade, then try again.");
+                }
+
+                throw error;
+            }
+
+            resetOccasionForm();
+            setStatus(
+                occasionStatus,
+                formValue.id
+                    ? "Occasion animation updated successfully."
+                    : "Occasion animation created successfully.",
+                "success"
+            );
+            await loadOccasionAnimations();
+            stampLastSync();
+        } catch (error) {
+            setStatus(occasionStatus, error.message || "Unable to save the occasion animation.", "error");
+        }
     });
 
     eventForm?.addEventListener("submit", async (event) => {
@@ -1206,6 +1594,98 @@
 
         button.disabled = false;
         setStatus(dashboardStatus, error.message || "Unable to delete the gallery post.", "error");
+    });
+
+    occasionList?.addEventListener("click", async (event) => {
+        const editButton = event.target.closest("[data-edit-occasion]");
+
+        if (editButton) {
+            const occasionId = editButton.getAttribute("data-edit-occasion");
+
+            if (!occasionId) {
+                return;
+            }
+
+            setStatus(occasionStatus, "Loading animation settings...");
+
+            const { data, error } = await client
+                .from("occasion_animations")
+                .select("id, title, animation_type, start_date, end_date, target_pages, intensity, is_enabled")
+                .eq("id", occasionId)
+                .maybeSingle();
+
+            if (error || !data) {
+                setStatus(occasionStatus, error?.message || "Unable to load that occasion animation.", "error");
+                return;
+            }
+
+            populateOccasionForm(data);
+            setStatus(occasionStatus, "Occasion animation loaded into the form.", "success");
+            occasionForm?.scrollIntoView({ behavior: "smooth", block: "start" });
+            return;
+        }
+
+        const toggleButton = event.target.closest("[data-toggle-occasion]");
+
+        if (toggleButton) {
+            const occasionId = toggleButton.getAttribute("data-toggle-occasion");
+            const nextEnabled = toggleButton.getAttribute("data-next-enabled") === "true";
+
+            if (!occasionId) {
+                return;
+            }
+
+            toggleButton.disabled = true;
+            setStatus(dashboardStatus, nextEnabled ? "Enabling occasion animation..." : "Disabling occasion animation...");
+
+            const { error } = await client
+                .from("occasion_animations")
+                .update({ is_enabled: nextEnabled })
+                .eq("id", occasionId);
+
+            if (error) {
+                toggleButton.disabled = false;
+                setStatus(dashboardStatus, error.message || "Unable to update the occasion animation.", "error");
+                return;
+            }
+
+            setStatus(dashboardStatus, nextEnabled ? "Occasion animation enabled." : "Occasion animation disabled.", "success");
+            await loadOccasionAnimations();
+            stampLastSync();
+            return;
+        }
+
+        const deleteButton = event.target.closest("[data-delete-occasion]");
+
+        if (!deleteButton) {
+            return;
+        }
+
+        const occasionId = deleteButton.getAttribute("data-delete-occasion");
+
+        if (!occasionId || !window.confirm("Delete this occasion animation?")) {
+            return;
+        }
+
+        deleteButton.disabled = true;
+        setStatus(dashboardStatus, "Deleting occasion animation...");
+
+        const { error } = await client.from("occasion_animations").delete().eq("id", occasionId);
+
+        if (error) {
+            deleteButton.disabled = false;
+            setStatus(dashboardStatus, error.message || "Unable to delete the occasion animation.", "error");
+            return;
+        }
+
+        if (occasionIdInput?.value === occasionId) {
+            resetOccasionForm();
+            setStatus(occasionStatus, "Occasion animation removed from the form.", "success");
+        }
+
+        setStatus(dashboardStatus, "Occasion animation deleted.", "success");
+        await loadOccasionAnimations();
+        stampLastSync();
     });
 
     galleryPagination?.addEventListener("click", async (event) => {

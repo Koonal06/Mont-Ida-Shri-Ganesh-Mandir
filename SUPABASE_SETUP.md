@@ -5,12 +5,21 @@ This website now includes a simple Supabase-powered admin area so you can manage
 - events
 - event images
 - gallery photos
+- occasion animations
 - published or draft status
 - scheduled publishing
 
 The admin page is:
 
-- `admin/index.html`
+- `admin/login.html`
+
+## Occasion animation upgrade
+
+The admin portal now supports seasonal website animations.
+
+If your Supabase project was created before this feature was added, also run:
+
+- [supabase/occasion-animations-upgrade.sql](/abs/path/c:/Users/koona/Desktop/Update%20Website/mont%20ida%20ganesh%20mandir/supabase/occasion-animations-upgrade.sql)
 
 ## Album upgrade
 
