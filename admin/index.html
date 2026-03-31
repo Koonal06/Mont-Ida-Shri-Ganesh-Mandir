@@ -30,8 +30,6 @@
 
             <div class="admin-portal-links">
                 <a class="admin-portal-link" href="../index.html" target="_blank" rel="noopener">View Website</a>
-                <a class="admin-portal-link admin-portal-link--solid" href="../SUPABASE_SETUP.md" target="_blank"
-                    rel="noopener">Setup Guide</a>
             </div>
         </header>
 
@@ -56,16 +54,16 @@
                     <article class="admin-side-stat">
                         <span>Access</span>
                         <strong>Secure</strong>
-                        <p>Only your approved admin email can enter and manage the data.</p>
+                        <p>Only authorized administrators can enter and manage the site content.</p>
                     </article>
                 </div>
 
                 <div class="admin-checklist">
                     <h2>Before signing in</h2>
                     <ul>
-                        <li>Run <code>supabase/schema.sql</code> in your Supabase SQL Editor.</li>
-                        <li>Use <code>koonalgovind06@gmail.com</code> as your admin login in Supabase Auth.</li>
-                        <li>Keep the service role key private and only use the public publishable key in the browser.</li>
+                        <li>Use your authorized administrator account.</li>
+                        <li>Keep your login credentials private.</li>
+                        <li>Contact the site owner if you need access.</li>
                     </ul>
                 </div>
 
@@ -82,20 +80,19 @@
                 <form id="admin-login-form" class="admin-form">
                     <div class="field">
                         <label for="admin-email-input">Email</label>
-                        <input id="admin-email-input" name="email" type="email" value="koonalgovind06@gmail.com"
-                            placeholder="koonalgovind06@gmail.com" autocomplete="email" required>
+                        <input id="admin-email-input" name="email" type="email"
+                            placeholder="Enter your admin email" autocomplete="email" required>
                     </div>
                     <div class="field">
                         <label for="admin-password-input">Password</label>
                         <div class="admin-password-wrap">
                             <input id="admin-password-input" name="password" type="password"
-                                placeholder="Enter your Supabase password" autocomplete="current-password" required>
+                                placeholder="Enter your password" autocomplete="current-password" required>
                             <button class="admin-password-toggle" id="admin-password-toggle" type="button"
                                 aria-label="Show password" aria-pressed="false">Show</button>
                         </div>
                     </div>
-                    <p class="helper-text admin-field-note">Use the admin email you added to Supabase and the password from
-                        Supabase Authentication.</p>
+                    <p class="helper-text admin-field-note">Sign in to continue.</p>
                     <button class="btn" type="submit">Enter Portal</button>
                     <p class="status-note" id="admin-login-status"></p>
                 </form>
@@ -107,7 +104,7 @@
                 <div class="admin-card-intro">
                     <span class="eyebrow">Dashboard</span>
                     <h1>Temple content manager</h1>
-                    <p>Signed in as <strong id="admin-email"></strong></p>
+                    <p>Administrator session active <strong id="admin-email"></strong></p>
                 </div>
 
                 <div class="admin-dashboard-actions">
@@ -130,9 +127,9 @@
                     <p>Photos and videos currently available for your gallery collection.</p>
                 </article>
                 <article class="admin-stat-card">
-                    <span>Media Bucket</span>
-                    <strong>site-media</strong>
-                    <p>All gallery media and event images are stored in your public Supabase bucket.</p>
+                    <span>Media Storage</span>
+                    <strong>Connected</strong>
+                    <p>Gallery media and event images are stored in your connected website storage.</p>
                 </article>
                 <article class="admin-stat-card">
                     <span>Last Refresh</span>
@@ -278,7 +275,7 @@
                         </div>
 
                         <div class="upload-note">
-                            <p>Your gallery uploads go to the <strong>site-media</strong> Supabase bucket and become visible on
+                            <p>Your gallery uploads go to connected website storage and become visible on
                                 the public gallery once published.</p>
                         </div>
 

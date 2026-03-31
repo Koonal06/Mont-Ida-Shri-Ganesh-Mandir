@@ -170,5 +170,5 @@ to authenticated
 using (bucket_id = 'site-media' and public.is_site_admin());
 
 insert into public.admin_users (email)
-values ('koonalgovind06@gmail.com')
+values ('replace-with-your-admin-email@example.com')
 on conflict (email) do nothing;

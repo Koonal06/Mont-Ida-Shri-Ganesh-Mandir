@@ -171,6 +171,26 @@
             .join(" ") || "Community Gathering";
     };
 
+    const maskEmail = (value) => {
+        const normalizedValue = String(value || "").trim();
+
+        if (!normalizedValue.includes("@")) {
+            return "";
+        }
+
+        const [localPart, domain] = normalizedValue.split("@");
+
+        if (!localPart || !domain) {
+            return "";
+        }
+
+        const visibleStart = localPart.slice(0, 2);
+        const visibleEnd = localPart.length > 4 ? localPart.slice(-1) : "";
+        const hiddenLength = Math.max(2, localPart.length - visibleStart.length - visibleEnd.length);
+
+        return `(${visibleStart}${"*".repeat(hiddenLength)}${visibleEnd}@${domain})`;
+    };
+
     const uniquePaths = (paths) => Array.from(new Set((paths || []).filter(Boolean)));
 
     const errorText = (error) => String(error?.message || error?.details || "").toLowerCase();
@@ -769,7 +789,7 @@
             return;
         }
 
-        adminEmail.textContent = session.user.email || "";
+        adminEmail.textContent = maskEmail(session.user.email);
         togglePanels(true);
         setStatus(dashboardStatus, "Signed in and ready to manage website content.", "success");
         await loadDashboard();
@@ -1173,8 +1193,7 @@
 
     setStatus(
         configStatus,
-        `Connected to Supabase bucket "${bucket}". Sign in with your admin email to manage events and gallery media.`,
-        "success"
+        "Secure admin portal is ready. Sign in to manage website content."
     );
     void syncSession();
 })();
