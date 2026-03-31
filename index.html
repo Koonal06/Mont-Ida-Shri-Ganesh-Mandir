@@ -5,12 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mont-Ida Shri Ganesh Mandir</title>
+    <meta name="description"
+        content="Mont-Ida Shri Ganesh Mandir is a welcoming temple community in Mauritius, celebrating faith, Marathi culture, and shared community life.">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="manifest" href="site.webmanifest">
+    <meta name="theme-color" content="#ffffff">
 </head>
 
-<body>
+<body class="page-home">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
     <nav class="navbar">
-        <a class="logo" href="./" aria-label="Mont-Ida Shri Ganesh Mandir Home">
+        <a class="logo" href="index.html" aria-label="Mont-Ida Shri Ganesh Mandir Home">
             <img src="assets/images/logo.png" onerror="this.onerror=null;this.src='assets/images/ganesha-logo.svg';"
                 alt="Ganesha logo">
             <span>Mont-Ida Shri Ganesh Mandir</span>
@@ -18,78 +27,225 @@
         <button class="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false"
             aria-controls="site-nav">Menu</button>
         <ul class="nav-links" id="site-nav">
-            <li><a href="./" class="active">Home</a></li>
-            <li><a href="about/">About</a></li>
-            <li><a href="events/">Events</a></li>
-            <li><a href="gallery/">Gallery</a></li>
-            <li><a href="members/">Members</a></li>
-            <li><a href="contact/">Contact</a></li>
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="about/index.html">About</a></li>
+            <li><a href="events/index.html">Events</a></li>
+            <li><a href="gallery/index.html">Gallery</a></li>
+            <li><a href="members/index.html">Members</a></li>
+            <li><a href="contact/index.html">Contact</a></li>
         </ul>
     </nav>
 
-    <section class="hero">
-        <video autoplay muted loop playsinline class="hero-video">
-            <source src="assets/video/index 1.mp4" type="video/mp4">
-        </video>
-        <div class="hero-overlay">
-            <h1>Mont-Ida Shri Ganesh Mandir</h1>
-            <p>Preserving Marathi Culture and Devotion</p>
-            <a href="events/" class="btn">View Upcoming Events</a>
-        </div>
-    </section>
-
-    <section class="countdown">
-        <h2>Next Major Event</h2>
-        <div id="timer">
-            <div><span id="days">00</span>Days</div>
-            <div><span id="hours">00</span>Hours</div>
-            <div><span id="minutes">00</span>Minutes</div>
-            <div><span id="seconds">00</span>Seconds</div>
-        </div>
-    </section>
-
-    <section class="events-preview page-section">
-        <div class="container">
-            <h2>Upcoming Events</h2>
-            <div class="events-grid" data-sort="date">
-                <article class="event-card" data-date="2026-09-19" data-title="Ganesh Chaturthi 2026"
-                    data-description="Join us for prayers, cultural events, and community gathering."
-                    data-location="Mont-Ida Shri Ganesh Mandir, Mauritius">
-                    <img class="event-image" src="assets/images/ganesha.jpeg"
-                        alt="Community gathering during Ganesh Chaturthi at the temple">
-                    <div class="event-head">
-                        <h3>Ganesh Chaturthi 2026</h3>
-                        <span class="event-status">Upcoming</span>
+    <main id="main-content">
+        <section class="hero">
+            <video autoplay muted loop playsinline class="hero-video">
+                <source src="assets/video/index 1.mp4" type="video/mp4">
+            </video>
+            <div class="hero-overlay">
+                <span class="eyebrow">A welcoming temple community in Mauritius</span>
+                <h1>Faith, celebration, and belonging at Mont-Ida Shri Ganesh Mandir</h1>
+                <p>We preserve Marathi devotion and create a warm space for prayer, festivals, cultural learning, and
+                    community togetherness across every generation.</p>
+                <div class="hero-actions">
+                    <a href="events/index.html" class="btn">Explore Upcoming Events</a>
+                    <a href="contact/index.html" class="btn btn-light">Contact The Temple</a>
+                </div>
+                <div class="hero-stats" aria-label="Community highlights">
+                    <div class="hero-stat">
+                        <strong>Prayer and Pooja</strong>
+                        <span>Daily devotion and sacred celebrations rooted in tradition.</span>
                     </div>
-                    <p class="event-date">Date: <time datetime="2026-09-19">19 September 2026</time></p>
-                    <p class="event-location">Location: Mont-Ida Shri Ganesh Mandir, Mauritius</p>
-                    <p>Join us for prayers, cultural events, and community gathering.</p>
-                    <a class="btn btn-small calendar-link" href="#" target="_blank" rel="noopener">Add to Calendar</a>
-                </article>
-                <article class="event-card" data-date="2026-10-10" data-title="Navratri Celebration"
-                    data-description="Traditional dance, prayers, and festive community celebration."
-                    data-location="Mont-Ida Shri Ganesh Mandir, Mauritius">
-                    <img class="event-image" src="assets/images/durgamaa.jpeg"
-                        alt="Traditional cultural dance performance for Navratri">
-                    <div class="event-head">
-                        <h3>Navratri Celebration</h3>
-                        <span class="event-status">Upcoming</span>
+                    <div class="hero-stat">
+                        <strong>Festival Gatherings</strong>
+                        <span>Ganesh Chaturthi, Navratri, Diwali, and joyful community moments.</span>
                     </div>
-                    <p class="event-date">Date: <time datetime="2026-10-10">10 October 2026</time></p>
-                    <p class="event-location">Location: Mont-Ida Shri Ganesh Mandir, Mauritius</p>
-                    <p>Traditional dance, prayers, and festive community celebration.</p>
-                    <a class="btn btn-small calendar-link" href="#" target="_blank" rel="noopener">Add to Calendar</a>
-                </article>
+                    <div class="hero-stat">
+                        <strong>Cultural Connection</strong>
+                        <span>Programs that help families and youth stay close to heritage.</span>
+                    </div>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
+
+        <section class="countdown">
+            <div class="container">
+                <div class="countdown-shell">
+                    <div class="section-heading">
+                        <span class="eyebrow">Looking Ahead</span>
+                        <h2 data-next-event-heading>Next major celebration</h2>
+                        <p data-next-event-copy>The community is counting down to Ganesh Chaturthi 2026.</p>
+                    </div>
+                    <div id="timer" aria-label="Countdown to the next major event">
+                        <div class="timer-unit">
+                            <span id="days" class="timer-value">00</span>
+                            <span class="timer-label">Days</span>
+                        </div>
+                        <div class="timer-unit">
+                            <span id="hours" class="timer-value">00</span>
+                            <span class="timer-label">Hours</span>
+                        </div>
+                        <div class="timer-unit">
+                            <span id="minutes" class="timer-value">00</span>
+                            <span class="timer-label">Minutes</span>
+                        </div>
+                        <div class="timer-unit">
+                            <span id="seconds" class="timer-value">00</span>
+                            <span class="timer-label">Seconds</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="page-section">
+            <div class="container">
+                <div class="section-heading section-heading--center">
+                    <span class="eyebrow">Temple Life</span>
+                    <h2>A community experience designed to feel warm and grounded</h2>
+                    <p>The mandir is more than a venue for festivals. It is a place where worship, cultural identity,
+                        and everyday support come together in a way that feels welcoming for families, youth, and
+                        visitors.</p>
+                </div>
+                <div class="feature-grid">
+                    <article class="feature-card">
+                        <span class="feature-badge">Faith</span>
+                        <h3>Devotion that feels accessible and heartfelt</h3>
+                        <p>Prayer gatherings and temple rituals create a calm, meaningful rhythm for the community.</p>
+                    </article>
+                    <article class="feature-card">
+                        <span class="feature-badge">Culture</span>
+                        <h3>Celebrations that keep traditions alive</h3>
+                        <p>Festivals, music, and cultural programs help preserve Marathi heritage in a joyful way.</p>
+                    </article>
+                    <article class="feature-card">
+                        <span class="feature-badge">Togetherness</span>
+                        <h3>Spaces for every generation to connect</h3>
+                        <p>From elders to children, the temple creates shared moments of learning, service, and care.
+                        </p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="page-section events-preview">
+            <div class="container">
+                <div class="section-heading section-heading--split">
+                    <div>
+                        <span class="eyebrow">Community Calendar</span>
+                        <h2>Upcoming events</h2>
+                        <p>Plan ahead for the celebrations and gatherings that bring the temple community together.</p>
+                    </div>
+                    <a href="events/index.html" class="btn btn-outline">View Full Calendar</a>
+                </div>
+                <div class="events-grid" data-sort="date" data-dynamic-events="home">
+                    <article class="event-card" data-date="2026-09-19" data-title="Ganesh Chaturthi 2026"
+                        data-description="Join us for prayers, cultural events, and community gathering."
+                        data-location="Mont-Ida Shri Ganesh Mandir, Mauritius">
+                        <img class="event-image" src="assets/images/ganesha.jpeg"
+                            alt="Community gathering during Ganesh Chaturthi at the temple">
+                        <div class="event-card-body">
+                            <div class="event-head">
+                                <h3>Ganesh Chaturthi 2026</h3>
+                                <span class="event-status">Upcoming</span>
+                            </div>
+                            <div class="event-meta">
+                                <p><span class="meta-label">Date</span><time datetime="2026-09-19">19 September
+                                        2026</time></p>
+                                <p><span class="meta-label">Location</span>Mont-Ida Shri Ganesh Mandir, Mauritius</p>
+                            </div>
+                            <p>Join us for prayers, cultural events, and community gathering.</p>
+                            <div class="event-actions">
+                                <a class="btn btn-outline btn-small calendar-link" href="#" target="_blank"
+                                    rel="noopener">Add To Calendar</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="event-card" data-date="2026-10-10" data-title="Navratri Celebration"
+                        data-description="Traditional dance, prayers, and festive community celebration."
+                        data-location="Mont-Ida Shri Ganesh Mandir, Mauritius">
+                        <img class="event-image" src="assets/images/durgamaa.jpeg"
+                            alt="Traditional cultural dance performance for Navratri">
+                        <div class="event-card-body">
+                            <div class="event-head">
+                                <h3>Navratri Celebration</h3>
+                                <span class="event-status">Upcoming</span>
+                            </div>
+                            <div class="event-meta">
+                                <p><span class="meta-label">Date</span><time datetime="2026-10-10">10 October
+                                        2026</time></p>
+                                <p><span class="meta-label">Location</span>Mont-Ida Shri Ganesh Mandir, Mauritius</p>
+                            </div>
+                            <p>Traditional dance, prayers, and festive community celebration.</p>
+                            <div class="event-actions">
+                                <a class="btn btn-outline btn-small calendar-link" href="#" target="_blank"
+                                    rel="noopener">Add To Calendar</a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="page-section">
+            <div class="container">
+                <div class="cta-panel cta-panel--visit">
+                    <div class="cta-copy">
+                        <span class="contact-label">Temple Location</span>
+                        <h2>Planning a visit or looking to get involved?</h2>
+                        <p>Whether you want festival details, volunteering information, or a simple point of contact,
+                            the temple is ready to welcome you. You can find us at <strong>QJ5P+4G8, Medine Camp de
+                                Masque</strong>.</p>
+                    </div>
+                    <div class="cta-actions">
+                        <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=QJ5P%2B4G8%2C%20Medine%20Camp%20de%20Masque"
+                            target="_blank" rel="noopener">Open In Google Maps</a>
+                        <a href="contact/index.html" class="btn btn-light">Contact Before Visiting</a>
+                    </div>
+                    <div class="cta-map-card">
+                        <iframe
+                            src="https://maps.google.com/maps?q=QJ5P%2B4G8%2C%20Medine%20Camp%20de%20Masque&amp;t=&amp;z=15&amp;ie=UTF8&amp;iwloc=&amp;output=embed"
+                            title="Map showing Mont-Ida Shri Ganesh Mandir at QJ5P+4G8, Medine Camp de Masque"
+                            loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
     <footer class="site-footer">
-        <p>&copy; 2026 Mont-Ida Shri Ganesh Mandir. All rights reserved.</p>
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <p>Mont-Ida Shri Ganesh Mandir</p>
+                <p>A warm temple community in Mauritius built around prayer, celebration, culture, and care for one
+                    another.</p>
+            </div>
+            <div>
+                <h2>Explore</h2>
+                <ul class="footer-links">
+                    <li><a href="about/index.html">About</a></li>
+                    <li><a href="events/index.html">Events</a></li>
+                    <li><a href="gallery/index.html">Gallery</a></li>
+                    <li><a href="members/index.html">Members</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h2>Connect</h2>
+                <p>Mont-Ida, Mauritius</p>
+                <a href="contact/index.html">Send a message</a>
+                <a href="mailto:info@montidamandir.org">info@montidamandir.org</a>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>&copy; 2026 Mont-Ida Shri Ganesh Mandir. All rights reserved.</p>
+            <p>Faith, culture, and community together.</p>
+        </div>
     </footer>
 
     <script src="js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/public-content.js"></script>
 </body>
 
 </html>
-

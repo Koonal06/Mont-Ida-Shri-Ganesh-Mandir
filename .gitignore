@@ -1,0 +1,8 @@
+node_modules/
+.claude/
+.agents/
+.mcp.json
+skills-lock.json
+favicon.zip
+Thumbs.db
+*.log

@@ -1,131 +1,136 @@
 # Mont-Ida Shri Ganesh Mandir Website Documentation
 
 ## 1. Project Overview
-This is a static multi-page website built with:
-- `HTML` (page structure)
-- `CSS` (design and layout)
-- `JavaScript` (interactivity)
+This is a static community website built with:
+- `HTML` for page structure
+- `CSS` for layout and visual styling
+- `JavaScript` for navigation, events, gallery behavior, and form feedback
 
-The site is designed with a warm cultural theme and responsive layout for desktop, tablet, and mobile.
+The site uses a clean multi-page structure that is easier to maintain for a temple and community organization.
 
-## 2. Pages
-- `index.html` - Home page (hero video, countdown, upcoming events preview)
-- `about.html` - About the mandir (mission, values, community)
-- `events.html` - Main events listing page
-- `event.html` - Secondary events page (same structure/content style)
-- `gallery.html` - Filterable gallery with lightbox
-- `contact.html` - Contact details and contact form
+## 2. Canonical Pages
+These are the real content pages that should be edited:
+- `index.html` - Home page with hero video, countdown, and event preview
+- `about/index.html` - About the mandir
+- `events/index.html` - Events listing
+- `gallery/index.html` - Gallery with filters and lightbox
+- `members/index.html` - Committee and members page
+- `contact/index.html` - Contact details and contact form
 
-## 3. Folder Structure
-- `css/styles.css` - Main global styling for all pages
-- `style.css` - Gallery-specific styling
-- `js/script.js` - All interactive behavior
-- `assets/video/Index.mp4` - Hero background video
+## 3. Legacy Redirect Pages
+These root-level files are now compatibility shims that forward visitors to the folder pages:
+- `about.html`
+- `event.html`
+- `events.html`
+- `gallery.html`
+- `members.html`
+- `contact.html`
 
-## 4. Main Features
+Do not add page content to those redirect files. Update the folder pages instead.
+
+## 4. Folder Structure
+- `assets/images/` - Logos and page images
+- `assets/video/` - Hero background videos
+- `css/styles.css` - Main shared stylesheet
+- `js/script.js` - Shared site behavior
+- `about/index.html` - About page
+- `events/index.html` - Events page
+- `gallery/index.html` - Gallery page
+- `members/index.html` - Members page
+- `contact/index.html` - Contact page
+- `favicon.ico`, `favicon-96x96.png`, `apple-touch-icon.png`, `site.webmanifest` - Site icons and manifest
+
+## 5. Main Features
 
 ### Global UI
 - Sticky navigation with active link states
 - Responsive mobile menu toggle
-- Smooth scroll behavior
+- Favicon and app icon support
+- URL normalization from `/index.html` to folder-style URLs when hosted
 - Section reveal animation on scroll
-- Card hover lift and subtle scaling effects
-- Footer pushed to bottom on short pages
 
-### Home (`index.html`)
+### Home
 - Hero video section with overlay
-- Main CTA button to events page
-- Countdown timer to next major event
+- Countdown timer to the next major event
 - Upcoming events preview cards
 
-### About (`about.html`)
-- Structured content in clear sections
-- Decorative heading divider lines
-- Alternating section background rhythm
+### About
+- Structured temple and community information
+- Clear content sections for mission and values
 
-### Events (`events.html`, `event.html`)
-- Event cards include:
-  - Title
-  - Date
-  - Location
-  - Description
-  - Status badge (`Upcoming`, `Today`, `Completed`)
-  - `Add to Calendar` link
-- Automatic event sorting by date (JavaScript)
+### Events
+- Event cards with title, date, location, description, and status
+- Automatic event sorting by date
+- Google Calendar links generated in JavaScript
 
-### Gallery (`gallery.html`)
-- Category filter buttons:
-  - All
-  - Festival Decorations
-  - Cultural Dance
-  - Prayer Ceremony
-  - Community Gathering
-  - Diwali Lights
-  - Youth Programs
-- No page reload filtering
-- Card layout with image, title, description
-- Lightbox zoom with caption
+### Gallery
+- Category filter buttons
+- Lightbox image preview
+- Responsive card layout
 
-### Contact (`contact.html`)
-- Contact cards (address, phone, email)
-- Form with name/email/message
-- AJAX form submission feedback (`Sending`, success, error)
+### Members
+- Committee and member presentation cards
+- Dedicated visual styling for leadership roles
 
-## 5. JavaScript Functions (`js/script.js`)
+### Contact
+- Contact information cards
+- Form submission feedback for success and error states
+
+## 6. JavaScript Functions
+Main behavior lives in `js/script.js`:
+- `normalizeHomeUrl()` - Rewrites `/index.html` to `/` on hosted sites
+- `normalizePageUrls()` - Rewrites old root `.html` routes to folder routes on hosted sites
 - `initializeNavigation()` - Mobile menu toggle
-- `updateCountdown()` - Countdown calculation and rendering
-- `setTimerValue()` - Timer number animation helper
-- `initializeEvents()` - Sort events + status badge logic + calendar links
-- `initializeGalleryFilters()` - Gallery button-based filtering
-- `initializeGalleryLightbox()` - Open/close image lightbox
-- `initializeContactForm()` - Submit form and show status feedback
-- `initializeSectionReveal()` - Scroll-based section fade reveal
-
-## 6. Styling System
-
-### Main Theme Variables (in `css/styles.css`)
-- Accent: `#FD9349`
-- Base background: `#F1D5B4`
-- Card background: `#FFFFFF`
-
-### Design Patterns
-- Rounded cards with soft shadows
-- Premium spacing and typography hierarchy
-- Smooth transitions for hover and motion
-- Gradient-based navbar, buttons, and footer
+- `updateCountdown()` - Countdown rendering
+- `initializeEvents()` - Event sorting, badges, and calendar links
+- `initializeGalleryFilters()` - Gallery filtering
+- `initializeGalleryLightbox()` - Lightbox open and close behavior
+- `initializeContactForm()` - Contact form submission state
+- `initializeSectionReveal()` - Scroll-based reveal animation
 
 ## 7. How to Update Content
 
-### Update Hero Video
-Replace file:
-- `assets/video/Index.mp4`
+### Update Home Content
+Edit:
+- `index.html`
+
+### Update About Content
+Edit:
+- `about/index.html`
 
 ### Update Events
-Edit event cards in:
-- `events.html`
-- `event.html`
-- `index.html` (preview cards)
+Edit:
+- `events/index.html`
+- `index.html` for the home-page event preview cards
 
 For each event card, update:
-- `data-date` (YYYY-MM-DD)
+- `data-date` in `YYYY-MM-DD` format
 - `data-title`
 - `data-description`
 - `data-location`
 
 ### Update Gallery Images
-In `gallery.html`, replace `img src` values in `.gallery-card` items.
+Edit:
+- `gallery/index.html`
 
-### Update Contact Email Endpoint
-In `contact.html`, edit form `action` URL:
-- Current: `https://formspree.io/f/mykdepgv`
+### Update Members
+Edit:
+- `members/index.html`
+
+### Update Contact Details or Form Endpoint
+Edit:
+- `contact/index.html`
+
+Current form endpoint:
+- `https://formspree.io/f/mykdepgv`
 
 ## 8. Run Locally
-This is a static website. You can run it by opening `index.html` directly in a browser, or with a local server for best behavior:
+Best option:
+- Run the site with a local static server such as VS Code Live Server
 
-Example (if you use VS Code Live Server):
-- Right click `index.html` -> `Open with Live Server`
+You can also open `index.html` directly in a browser. The navigation now points to explicit folder `index.html` files so local browsing is more reliable.
 
 ## 9. Notes
-- `event.html` and `events.html` both exist; keep them in sync if both are used.
-- `style.css` is intentionally limited to gallery-specific polish.
-- Main site-wide styling should stay in `css/styles.css`.
+- The folder pages are the single source of truth for site content.
+- The root `.html` pages only exist to redirect old links safely.
+- Main shared styling should stay in `css/styles.css`.
