@@ -1012,10 +1012,12 @@ main {
     grid-template-columns: repeat(auto-fit, minmax(17rem, 26rem));
     gap: 1.5rem;
     justify-content: center;
-    align-items: start;
+    align-items: stretch;
 }
 
 .gallery-card {
+    display: flex;
+    height: 100%;
     overflow: hidden;
     width: min(100%, 26rem);
     justify-self: center;
@@ -1150,12 +1152,18 @@ main {
 
 .gallery-card-content {
     display: grid;
+    flex: 1;
+    align-content: start;
     gap: 0.65rem;
     padding: 1.05rem 1.1rem 1.15rem;
 }
 
 .gallery-card-content h3 {
     line-height: 1.08;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
 }
 
 .gallery-card-content p {
@@ -1536,6 +1544,11 @@ main {
         radial-gradient(circle at top left, rgba(255, 255, 255, 0.4), transparent 18%),
         radial-gradient(circle at right 14% top 16%, rgba(203, 107, 49, 0.16), transparent 18%),
         linear-gradient(180deg, #fbf7f1 0%, #f2e5d1 100%);
+}
+
+.admin-portal-body[data-admin-route="dashboard"]:not([data-admin-ready="true"]) .admin-portal {
+    opacity: 0;
+    pointer-events: none;
 }
 
 .admin-portal {

@@ -29,10 +29,26 @@
     const galleryPublishCheckbox = document.getElementById("gallery-published");
     const galleryScheduleField = document.getElementById("gallery-schedule-field");
     const galleryPublishAtInput = document.getElementById("gallery-publish-at");
+    const adminRoute = document.body?.dataset?.adminRoute || "login";
+    const isDashboardRoute = adminRoute === "dashboard";
+    const isLoginRoute = adminRoute === "login";
+    const dashboardUrl = new URL("/admin/", window.location.origin).toString();
+    const loginUrl = new URL("/admin/login.html", window.location.origin).toString();
+    const notFoundUrl = new URL("/404.html", window.location.origin).toString();
 
     if (!loginPanel || !dashboardPanel || !loginForm || !logoutButton || !configStatus) {
         return;
     }
+
+    const markAdminReady = () => {
+        if (document.body) {
+            document.body.dataset.adminReady = "true";
+        }
+    };
+
+    const redirectToNotFound = () => {
+        window.location.replace(notFoundUrl);
+    };
 
     const setStatus = (element, message, type = "") => {
         if (!element) {
@@ -58,6 +74,7 @@
             "Add your Supabase URL and anon key in js/supabase-config.js before using the admin page.",
             "error"
         );
+        markAdminReady();
         return;
     }
 
@@ -767,6 +784,11 @@
         } = await client.auth.getSession();
 
         if (!session) {
+            if (isDashboardRoute) {
+                redirectToNotFound();
+                return;
+            }
+
             togglePanels(false);
             adminEmail.textContent = "";
             setMetricValue(eventCountValue, "0");
@@ -777,6 +799,7 @@
             if (galleryPagination) {
                 galleryPagination.innerHTML = "";
             }
+            markAdminReady();
             return;
         }
 
@@ -784,8 +807,20 @@
 
         if (!isAdmin) {
             await client.auth.signOut();
+
+            if (isDashboardRoute) {
+                redirectToNotFound();
+                return;
+            }
+
             togglePanels(false);
-            setStatus(loginStatus, "This account is not listed as an admin in Supabase.", "error");
+            setStatus(loginStatus, "This account is not authorized for admin access.", "error");
+            markAdminReady();
+            return;
+        }
+
+        if (isLoginRoute) {
+            window.location.replace(dashboardUrl);
             return;
         }
 
@@ -793,6 +828,7 @@
         togglePanels(true);
         setStatus(dashboardStatus, "Signed in and ready to manage website content.", "success");
         await loadDashboard();
+        markAdminReady();
     };
 
     loginForm.addEventListener("submit", async (event) => {
@@ -851,6 +887,13 @@
         togglePanels(false);
         setStatus(loginStatus, "Signed out.", "success");
         setStatus(dashboardStatus, "");
+
+        if (isDashboardRoute) {
+            window.location.replace(loginUrl);
+            return;
+        }
+
+        markAdminReady();
     });
 
     eventForm?.addEventListener("submit", async (event) => {

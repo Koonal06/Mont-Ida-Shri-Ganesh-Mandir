@@ -4,15 +4,293 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redirecting to Admin Login | Mont-Ida Shri Ganesh Mandir</title>
-    <meta name="robots" content="noindex">
-    <meta http-equiv="refresh" content="0; url=./index.html">
-    <script>
-        window.location.replace("./index.html");
-    </script>
+    <title>Admin Portal - Mont-Ida Shri Ganesh Mandir</title>
+    <meta name="description" content="Private admin portal for managing temple events and gallery content.">
+    <meta name="robots" content="noindex, nofollow, noarchive">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="manifest" href="../site.webmanifest">
+    <meta name="theme-color" content="#24130d">
 </head>
 
-<body>
+<body class="admin-portal-body" data-admin-route="login">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <main class="admin-portal" id="main-content">
+        <header class="admin-portal-header">
+            <a class="admin-portal-brand" href="../index.html" aria-label="Return to Mont-Ida Shri Ganesh Mandir website">
+                <img src="../assets/images/logo.png" onerror="this.onerror=null;this.src='../assets/images/ganesha-logo.svg';"
+                    alt="Ganesha logo">
+                <span class="admin-portal-brand-copy">
+                    <strong>Mont-Ida Shri Ganesh Mandir</strong>
+                    <span>Admin Portal</span>
+                </span>
+            </a>
+
+            <div class="admin-portal-links">
+                <a class="admin-portal-link" href="../index.html" target="_blank" rel="noopener">View Website</a>
+            </div>
+        </header>
+
+        <section class="admin-login-layout" id="admin-login-panel">
+            <article class="admin-side-panel">
+                <span class="eyebrow">Private Access</span>
+                <h1>Website control room for events and gallery media</h1>
+                <p>Use this portal to sign in, publish festival announcements, upload photos or videos, and keep the public website
+                    updated without touching the HTML pages.</p>
+
+                <div class="admin-side-grid">
+                    <article class="admin-side-stat">
+                        <span>Events</span>
+                        <strong>Publish</strong>
+                        <p>Add title, time, location, and images for upcoming celebrations.</p>
+                    </article>
+                    <article class="admin-side-stat">
+                        <span>Gallery</span>
+                        <strong>Upload</strong>
+                        <p>Keep community moments fresh with new mandir and festival photos or videos.</p>
+                    </article>
+                    <article class="admin-side-stat">
+                        <span>Access</span>
+                        <strong>Secure</strong>
+                        <p>Only authorized administrators can enter and manage the site content.</p>
+                    </article>
+                </div>
+
+                <div class="admin-checklist">
+                    <h2>Before signing in</h2>
+                    <ul>
+                        <li>Use your authorized administrator account.</li>
+                        <li>Keep your login credentials private.</li>
+                        <li>Contact the site owner if you need access.</li>
+                    </ul>
+                </div>
+
+                <p class="status-note" id="admin-config-status"></p>
+            </article>
+
+            <article class="admin-auth admin-login-card">
+                <div class="admin-card-intro">
+                    <span class="eyebrow">Admin Sign In</span>
+                    <h2>Log in to your dashboard</h2>
+                    <p>Once signed in, you will be able to manage live events and gallery content from one place.</p>
+                </div>
+
+                <form id="admin-login-form" class="admin-form">
+                    <div class="field">
+                        <label for="admin-email-input">Email</label>
+                        <input id="admin-email-input" name="email" type="email"
+                            placeholder="Enter your admin email" autocomplete="email" required>
+                    </div>
+                    <div class="field">
+                        <label for="admin-password-input">Password</label>
+                        <div class="admin-password-wrap">
+                            <input id="admin-password-input" name="password" type="password"
+                                placeholder="Enter your password" autocomplete="current-password" required>
+                            <button class="admin-password-toggle" id="admin-password-toggle" type="button"
+                                aria-label="Show password" aria-pressed="false">Show</button>
+                        </div>
+                    </div>
+                    <p class="helper-text admin-field-note">Sign in to continue.</p>
+                    <button class="btn" type="submit">Enter Portal</button>
+                    <p class="status-note" id="admin-login-status"></p>
+                </form>
+            </article>
+        </section>
+
+        <section class="admin-hidden admin-dashboard-shell" id="admin-dashboard">
+            <div class="admin-dashboard-top">
+                <div class="admin-card-intro">
+                    <span class="eyebrow">Dashboard</span>
+                    <h1>Temple content manager</h1>
+                    <p>Administrator session active <strong id="admin-email"></strong></p>
+                </div>
+
+                <div class="admin-dashboard-actions">
+                    <a class="btn btn-outline" href="../index.html" target="_blank" rel="noopener">Open Public Site</a>
+                    <button class="btn" id="admin-logout" type="button">Sign Out</button>
+                </div>
+            </div>
+
+            <p class="status-note" id="admin-dashboard-status"></p>
+
+            <div class="admin-overview">
+                <article class="admin-stat-card">
+                    <span>Total Events</span>
+                    <strong id="admin-event-count">0</strong>
+                    <p>Published and draft event entries currently in Supabase.</p>
+                </article>
+                <article class="admin-stat-card">
+                    <span>Total Gallery Items</span>
+                    <strong id="admin-gallery-count">0</strong>
+                    <p>Photos and videos currently available for your gallery collection.</p>
+                </article>
+                <article class="admin-stat-card">
+                    <span>Media Storage</span>
+                    <strong>Connected</strong>
+                    <p>Gallery media and event images are stored in your connected website storage.</p>
+                </article>
+                <article class="admin-stat-card">
+                    <span>Last Refresh</span>
+                    <strong id="admin-last-sync">Waiting</strong>
+                    <p>The dashboard refreshes automatically after each content change.</p>
+                </article>
+            </div>
+
+            <div class="admin-layout">
+                <div class="admin-column">
+                    <article class="admin-card">
+                        <div class="admin-card-intro">
+                            <span class="eyebrow">Create Event</span>
+                            <h2>Add a new temple event</h2>
+                            <p>Fill in the details below and choose whether the event should publish now, go live later,
+                                or stay saved as a draft.</p>
+                        </div>
+
+                        <form id="event-form" class="admin-form">
+                            <div class="admin-grid">
+                                <div class="field">
+                                    <label for="event-title">Event title</label>
+                                    <input id="event-title" name="title" type="text" required>
+                                </div>
+                                <div class="field">
+                                    <label for="event-location">Location</label>
+                                    <input id="event-location" name="location" type="text"
+                                        value="Mont-Ida Shri Ganesh Mandir, Mauritius" required>
+                                </div>
+                            </div>
+
+                            <div class="admin-grid">
+                                <div class="field">
+                                    <label for="event-start">Start date and time</label>
+                                    <input id="event-start" name="start_at" type="datetime-local" required>
+                                </div>
+                                <div class="field">
+                                    <label for="event-end">End date and time</label>
+                                    <input id="event-end" name="end_at" type="datetime-local">
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label for="event-description">Description</label>
+                                <textarea id="event-description" name="description" rows="4" required></textarea>
+                            </div>
+
+                            <div class="field">
+                                <label for="event-image">Event image</label>
+                                <input id="event-image" name="image" type="file" accept="image/*" required>
+                            </div>
+
+                            <label class="admin-inline-check"><input id="event-published" type="checkbox" name="published" checked> Publish
+                                immediately</label>
+                            <div class="field admin-hidden" id="event-schedule-field">
+                                <label for="event-publish-at">Schedule publish time</label>
+                                <input id="event-publish-at" name="publish_at" type="datetime-local">
+                                <p class="helper-text">Uncheck "Publish immediately" and choose a time to schedule this
+                                    event. Leave it blank to save the event as a draft.</p>
+                            </div>
+                            <button class="btn" type="submit">Add Event</button>
+                            <p class="status-note" id="event-form-status"></p>
+                        </form>
+                    </article>
+
+                    <article class="admin-card">
+                        <div class="admin-card-intro">
+                            <span class="eyebrow">Event Library</span>
+                            <h2>Manage saved events</h2>
+                            <p>Review the content already in your database and remove entries you no longer want visible.
+                            </p>
+                        </div>
+                        <div class="admin-list" id="admin-events-list"></div>
+                    </article>
+                </div>
+
+                <div class="admin-column">
+                    <article class="admin-card">
+                        <div class="admin-card-intro">
+                            <span class="eyebrow">Upload Media</span>
+                            <h2>Add a gallery post</h2>
+                            <p>Upload one or several photos or videos under one caption so festival moments can appear like an album
+                                post on the public gallery page, then choose whether it should go live now, later, or stay
+                                as a draft.</p>
+                        </div>
+
+                        <form id="gallery-form" class="admin-form">
+                            <div class="admin-grid">
+                                <div class="field">
+                                    <label for="gallery-title">Post title</label>
+                                    <input id="gallery-title" name="title" type="text" required>
+                                </div>
+                                <div class="field">
+                                    <label for="gallery-category">Category</label>
+                                    <select id="gallery-category" name="category" required>
+                                        <option value="" selected disabled>Select a gallery category</option>
+                                        <option value="festival-decorations">Festival Decorations</option>
+                                        <option value="cultural-dance">Cultural Dance</option>
+                                        <option value="prayer-ceremony">Prayer Ceremony</option>
+                                        <option value="community-gathering">Community Gathering</option>
+                                        <option value="diwali-lights">Diwali Lights</option>
+                                        <option value="youth-programs">Youth Programs</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label for="gallery-description">Description</label>
+                                <textarea id="gallery-description" name="description" rows="4" required></textarea>
+                            </div>
+
+                            <p class="helper-text admin-field-note">This category decides which gallery filter button the
+                                uploaded post appears under on the public gallery page.</p>
+
+                            <div class="field">
+                                <label for="gallery-image">Photos or videos</label>
+                                <input id="gallery-image" name="image" type="file" accept="image/*,video/*" multiple required>
+                            </div>
+
+                            <p class="helper-text admin-field-note">You can select several photos and videos at once.
+                                They will stay grouped under this same post, caption, and category. The first file becomes
+                                the cover shown first on the public gallery, and you can reorder the set later below.</p>
+
+                            <label class="admin-inline-check"><input id="gallery-published" type="checkbox" name="published" checked> Publish
+                                immediately</label>
+                            <div class="field admin-hidden" id="gallery-schedule-field">
+                                <label for="gallery-publish-at">Schedule publish time</label>
+                                <input id="gallery-publish-at" name="publish_at" type="datetime-local">
+                                <p class="helper-text">Uncheck "Publish immediately" and choose a time to schedule this
+                                    gallery post. Leave it blank to save the post as a draft.</p>
+                            </div>
+                            <button class="btn" type="submit">Add Gallery Post</button>
+                            <p class="status-note" id="gallery-form-status"></p>
+                        </form>
+                    </article>
+
+                    <article class="admin-card">
+                        <div class="admin-card-intro">
+                            <span class="eyebrow">Gallery Library</span>
+                            <h2>Manage uploaded gallery posts</h2>
+                            <p>Every gallery post keeps its own caption, category, and grouped media set so visitors can
+                                browse it like an album.</p>
+                        </div>
+
+                        <div class="upload-note">
+                            <p>Your gallery uploads go to connected website storage and become visible on
+                                the public gallery once published.</p>
+                        </div>
+
+                        <div class="admin-list" id="admin-gallery-list"></div>
+                        <div class="admin-list-pagination" id="admin-gallery-pagination" aria-label="Gallery post pages"></div>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-config.js"></script>
+    <script src="../js/admin.js"></script>
 </body>
 
 </html>
