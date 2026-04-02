@@ -41,7 +41,21 @@ create table if not exists public.gallery_item_photos (
 create table if not exists public.occasion_animations (
     id uuid primary key default gen_random_uuid(),
     title text not null check (char_length(trim(title)) > 0),
-    animation_type text not null check (animation_type in ('flower-petals', 'glowing-diyas', 'sparkles', 'floating-lights', 'confetti', 'snowflakes')),
+    festival_name text not null default 'custom'
+        check (festival_name in (
+            'ganesh-chaturthi',
+            'sankashti',
+            'durga-pooja-navratri',
+            'hanuman-jayanti',
+            'maharashtra-day',
+            'mauritius-independence-day',
+            'christmas',
+            'custom'
+        )),
+    animation_type text not null default 'floating-lights'
+        check (animation_type in ('flower-petals', 'glowing-diyas', 'sparkles', 'floating-lights', 'confetti', 'snowflakes')),
+    theme_settings jsonb not null default '{}'::jsonb
+        check (jsonb_typeof(theme_settings) = 'object'),
     start_date date not null,
     end_date date not null check (end_date >= start_date),
     target_pages text[] not null default array['all']::text[]
@@ -51,6 +65,7 @@ create table if not exists public.occasion_animations (
         ),
     intensity text not null default 'medium' check (intensity in ('light', 'medium', 'heavy')),
     is_enabled boolean not null default true,
+    disable_on_mobile boolean not null default false,
     created_at timestamptz not null default timezone('utc', now()),
     updated_at timestamptz not null default timezone('utc', now())
 );

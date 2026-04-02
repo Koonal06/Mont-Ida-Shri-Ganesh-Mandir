@@ -209,6 +209,7 @@ function initializeEvents() {
 function initializeGalleryFilters() {
     const filterContainer = document.getElementById("gallery-filters");
     const galleryGrid = document.getElementById("gallery-grid") || document.querySelector(".gallery-grid");
+    const hiddenFilters = new Set(["festival-decorations", "diwali-lights", "youth-programs"]);
 
     if (!filterContainer || !galleryGrid) {
         return;
@@ -234,6 +235,12 @@ function initializeGalleryFilters() {
 
         buttons.forEach((button) => {
             const normalizedFilter = normalizeCategory(button.dataset.filter || button.textContent);
+
+            if (normalizedFilter !== "all" && hiddenFilters.has(normalizedFilter)) {
+                button.remove();
+                return;
+            }
+
             button.dataset.filter = normalizedFilter || "all";
             button.setAttribute("aria-pressed", String(button.classList.contains("active")));
             knownFilters.add(button.dataset.filter);
@@ -244,7 +251,11 @@ function initializeGalleryFilters() {
             const category = normalizeCategory(card.dataset.category || title);
             card.dataset.category = category || "all";
 
-            if (card.dataset.category !== "all" && !knownFilters.has(card.dataset.category)) {
+            if (
+                card.dataset.category !== "all" &&
+                !hiddenFilters.has(card.dataset.category) &&
+                !knownFilters.has(card.dataset.category)
+            ) {
                 const button = document.createElement("button");
                 button.type = "button";
                 button.className = "gallery-filter-btn";
@@ -259,16 +270,20 @@ function initializeGalleryFilters() {
 
     const activateFilter = (selectedFilter) => {
         const normalizedFilter = normalizeCategory(selectedFilter) || "all";
+        const resolvedFilter =
+            normalizedFilter !== "all" && hiddenFilters.has(normalizedFilter)
+                ? "all"
+                : normalizedFilter;
 
         Array.from(filterContainer.querySelectorAll(".gallery-filter-btn")).forEach((button) => {
-            const isActive = (normalizeCategory(button.dataset.filter) || "all") === normalizedFilter;
+            const isActive = (normalizeCategory(button.dataset.filter) || "all") === resolvedFilter;
             button.classList.toggle("active", isActive);
             button.setAttribute("aria-pressed", String(isActive));
         });
 
         Array.from(galleryGrid.querySelectorAll(".gallery-card")).forEach((card) => {
             const cardCategory = normalizeCategory(card.dataset.category);
-            card.hidden = !(normalizedFilter === "all" || cardCategory === normalizedFilter);
+            card.hidden = !(resolvedFilter === "all" || cardCategory === resolvedFilter);
         });
     };
 

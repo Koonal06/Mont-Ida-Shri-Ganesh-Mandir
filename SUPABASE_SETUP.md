@@ -15,7 +15,7 @@ The admin page is:
 
 ## Occasion animation upgrade
 
-The admin portal now supports seasonal website animations.
+The admin portal now supports festival-specific website animations, custom motion blends, and mobile visibility controls.
 
 If your Supabase project was created before this feature was added, also run:
 
@@ -110,6 +110,7 @@ From the admin page you can:
 - add an event title, description, location, start time, end time, and image
 - upload gallery photos with a title, description, and category
 - publish immediately, schedule for later, or save as draft
+- choose predefined festival animation themes or build a custom one
 - delete existing events and gallery items
 
 ## 6. Gallery categories

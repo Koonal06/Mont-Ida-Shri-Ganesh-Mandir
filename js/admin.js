@@ -35,17 +35,24 @@
     const galleryPublishAtInput = document.getElementById("gallery-publish-at");
     const occasionIdInput = document.getElementById("occasion-id");
     const occasionTitleInput = document.getElementById("occasion-title");
+    const occasionFestivalInput = document.getElementById("occasion-festival-name");
     const occasionTypeInput = document.getElementById("occasion-animation-type");
     const occasionStartInput = document.getElementById("occasion-start-date");
     const occasionEndInput = document.getElementById("occasion-end-date");
     const occasionEnabledCheckbox = document.getElementById("occasion-enabled");
+    const occasionDisableMobileCheckbox = document.getElementById("occasion-disable-mobile");
     const occasionPreviewButton = document.getElementById("occasion-preview-button");
     const occasionCancelButton = document.getElementById("occasion-cancel-button");
     const occasionPreviewStage = document.getElementById("occasion-preview-stage");
     const occasionPreviewTitle = document.getElementById("occasion-preview-title");
     const occasionPreviewMeta = document.getElementById("occasion-preview-meta");
+    const occasionThemeHeading = document.getElementById("occasion-theme-heading");
+    const occasionThemeDescription = document.getElementById("occasion-theme-description");
+    const occasionThemeEffects = document.getElementById("occasion-theme-effects");
+    const occasionCustomFields = document.getElementById("occasion-custom-fields");
     const occasionTargetInputs = Array.from(document.querySelectorAll('input[name="target_pages"]'));
     const occasionIntensityInputs = Array.from(document.querySelectorAll('input[name="intensity"]'));
+    const occasionCustomSettingInputs = Array.from(document.querySelectorAll("[data-occasion-setting]"));
     const adminRoute = document.body?.dataset?.adminRoute || "login";
     const isDashboardRoute = adminRoute === "dashboard";
     const isLoginRoute = adminRoute === "login";
@@ -107,9 +114,11 @@
         { value: "youth-programs", label: "Youth Programs" }
     ];
     const allowedGalleryCategories = new Set(galleryCategories.map((item) => item.value));
-    const occasionAnimationTypes = occasionAnimationLibrary?.animationTypes || [];
+    const occasionFestivalThemes = occasionAnimationLibrary?.festivalThemes || [];
+    const occasionAnimationTypes = occasionAnimationLibrary?.customAnimationTypes || occasionAnimationLibrary?.animationTypes || [];
     const occasionIntensityLevels = occasionAnimationLibrary?.intensityLevels || [];
     const occasionTargetPages = occasionAnimationLibrary?.targetPages || [];
+    const allowedOccasionFestivalNames = new Set(occasionFestivalThemes.map((item) => item.value));
     const allowedOccasionAnimationTypes = new Set(occasionAnimationTypes.map((item) => item.value));
     const allowedOccasionIntensityLevels = new Set(occasionIntensityLevels.map((item) => item.value));
     const galleryPostsPerPage = 6;
@@ -231,6 +240,35 @@
     const getSelectedOccasionIntensity = () =>
         occasionIntensityInputs.find((input) => input.checked)?.value || "medium";
 
+    const getSelectedOccasionFestival = () =>
+        String(occasionFestivalInput?.value || "").trim();
+
+    const getOccasionThemeSettings = () => {
+        const settings = {};
+
+        occasionCustomSettingInputs.forEach((input) => {
+            const key = input.getAttribute("data-occasion-setting");
+
+            if (key) {
+                settings[key] = Boolean(input.checked);
+            }
+        });
+
+        return settings;
+    };
+
+    const setOccasionThemeSettings = (value) => {
+        const normalizedSettings = occasionAnimationLibrary?.normalizeThemeSettings(value || {}) || {};
+
+        occasionCustomSettingInputs.forEach((input) => {
+            const key = input.getAttribute("data-occasion-setting");
+
+            if (key) {
+                input.checked = Boolean(normalizedSettings[key]);
+            }
+        });
+    };
+
     const setOccasionTargetSelection = (values) => {
         const normalizedPages = occasionAnimationLibrary?.normalizeTargetPages(values || []) || ["all"];
         const selectedValues = new Set(normalizedPages.length > 0 ? normalizedPages : ["all"]);
@@ -279,16 +317,86 @@
         }
     };
 
-    const getOccasionFormValue = () => ({
-        id: String(occasionIdInput?.value || "").trim(),
-        title: String(occasionTitleInput?.value || "").trim(),
-        animation_type: String(occasionTypeInput?.value || "").trim(),
-        start_date: String(occasionStartInput?.value || "").trim(),
-        end_date: String(occasionEndInput?.value || "").trim(),
-        target_pages: getCheckedOccasionPages(),
-        intensity: getSelectedOccasionIntensity(),
-        is_enabled: Boolean(occasionEnabledCheckbox?.checked)
-    });
+    const syncOccasionFestivalUi = (festivalNameInput, options = {}) => {
+        const festivalName = String(festivalNameInput || "").trim();
+        const isCustom = festivalName === "custom";
+        const theme = festivalName ? occasionAnimationLibrary?.getFestivalTheme(festivalName) : null;
+        const themeEffects = theme?.effects || [];
+
+        occasionCustomFields?.classList.toggle("admin-hidden", !isCustom);
+
+        if (occasionTypeInput) {
+            occasionTypeInput.disabled = !isCustom;
+
+            if (!isCustom) {
+                occasionTypeInput.value = theme?.defaultAnimationType || "";
+            } else if (!occasionTypeInput.value) {
+                occasionTypeInput.value = "floating-lights";
+            }
+        }
+
+        if (!festivalName) {
+            if (occasionThemeHeading) {
+                occasionThemeHeading.textContent = "Choose a festival theme to preview its atmosphere";
+            }
+
+            if (occasionThemeDescription) {
+                occasionThemeDescription.textContent = "Pick a predefined occasion for a ready-made spiritual animation, or switch to Custom to mix your own motion and accents.";
+            }
+
+            if (occasionThemeEffects) {
+                occasionThemeEffects.innerHTML = "";
+            }
+
+            return;
+        }
+
+        if (occasionThemeHeading) {
+            occasionThemeHeading.textContent = theme?.label || "Festival Theme";
+        }
+
+        if (occasionThemeDescription) {
+            occasionThemeDescription.textContent = theme?.description || "Adjust the settings below, then preview the motion before saving.";
+        }
+
+        if (occasionThemeEffects) {
+            occasionThemeEffects.innerHTML = themeEffects
+                .map((effect) => `<span>${escapeHtml(effect)}</span>`)
+                .join("");
+        }
+
+        if (
+            options.autofillTitle &&
+            occasionTitleInput &&
+            !String(occasionTitleInput.value || "").trim() &&
+            String(theme?.defaultTitle || "").trim()
+        ) {
+            occasionTitleInput.value = theme.defaultTitle;
+        }
+    };
+
+    const getOccasionFormValue = () => {
+        const festivalName = getSelectedOccasionFestival();
+        const isCustom = festivalName === "custom";
+
+        return {
+            id: String(occasionIdInput?.value || "").trim(),
+            title: String(occasionTitleInput?.value || "").trim(),
+            festival_name: festivalName,
+            animation_type: isCustom
+                ? String(occasionTypeInput?.value || "").trim()
+                : (occasionAnimationLibrary?.getFestivalDefaultAnimationType(festivalName) || ""),
+            theme_settings: isCustom
+                ? getOccasionThemeSettings()
+                : (occasionAnimationLibrary?.customThemeSettingDefaults || {}),
+            start_date: String(occasionStartInput?.value || "").trim(),
+            end_date: String(occasionEndInput?.value || "").trim(),
+            target_pages: getCheckedOccasionPages(),
+            intensity: getSelectedOccasionIntensity(),
+            is_enabled: Boolean(occasionEnabledCheckbox?.checked),
+            disable_on_mobile: Boolean(occasionDisableMobileCheckbox?.checked)
+        };
+    };
 
     const updateOccasionPreviewCopy = (headline, meta) => {
         if (occasionPreviewTitle) {
@@ -316,7 +424,9 @@
             ...value,
             target_pages: occasionAnimationLibrary.normalizeTargetPages(value?.target_pages || []),
             intensity: String(value?.intensity || "medium"),
-            is_enabled: Boolean(value?.is_enabled ?? true)
+            is_enabled: Boolean(value?.is_enabled ?? true),
+            disable_on_mobile: Boolean(value?.disable_on_mobile ?? false),
+            theme_settings: occasionAnimationLibrary.normalizeThemeSettings(value?.theme_settings || {})
         };
 
         const validationError = occasionAnimationLibrary.validateOccasionAnimation(normalizedValue);
@@ -324,7 +434,7 @@
         if (validationError) {
             updateOccasionPreviewCopy(
                 "Preview the festive effect before saving",
-                "Choose an animation type, pages, and intensity, then click Preview Animation."
+                "Choose a festival theme, pages, and intensity, then click Preview Animation."
             );
 
             if (!options.silent) {
@@ -334,14 +444,18 @@
             return false;
         }
 
-        occasionPreviewController = occasionAnimationLibrary.mount(occasionPreviewStage, normalizedValue, { preview: true });
-        const targetLabels = normalizedValue.target_pages
+        const previewConfig = occasionAnimationLibrary.normalizeOccasionAnimation(normalizedValue);
+        occasionPreviewController = occasionAnimationLibrary.mount(occasionPreviewStage, previewConfig, { preview: true });
+        const targetLabels = previewConfig.target_pages
             .map((page) => occasionAnimationLibrary.getPageLabel(page))
             .join(", ");
+        const animationLabel = previewConfig.festival_name === "custom"
+            ? `${occasionAnimationLibrary.getFestivalLabel(previewConfig.festival_name)}: ${occasionAnimationLibrary.getAnimationLabel(previewConfig.animation_type)}`
+            : occasionAnimationLibrary.getFestivalLabel(previewConfig.festival_name);
 
         updateOccasionPreviewCopy(
-            normalizedValue.title,
-            `${occasionAnimationLibrary.getAnimationLabel(normalizedValue.animation_type)} on ${targetLabels} with ${occasionAnimationLibrary.getIntensityLabel(normalizedValue.intensity).toLowerCase()} intensity.`
+            previewConfig.title,
+            `${animationLabel} on ${targetLabels} with ${occasionAnimationLibrary.getIntensityLabel(previewConfig.intensity).toLowerCase()} intensity.${previewConfig.disable_on_mobile ? " Hidden on mobile." : ""}`
         );
 
         if (!options.silent && options.successMessage) {
@@ -362,16 +476,22 @@
             occasionEnabledCheckbox.checked = true;
         }
 
+        if (occasionDisableMobileCheckbox) {
+            occasionDisableMobileCheckbox.checked = false;
+        }
+
         const mediumIntensityInput = occasionIntensityInputs.find((input) => input.value === "medium");
         if (mediumIntensityInput) {
             mediumIntensityInput.checked = true;
         }
 
+        setOccasionThemeSettings(occasionAnimationLibrary?.customThemeSettingDefaults || {});
         setOccasionTargetSelection(["all"]);
+        syncOccasionFestivalUi("", { autofillTitle: false });
         destroyOccasionPreview();
         updateOccasionPreviewCopy(
             "Preview the festive effect before saving",
-            "Choose an animation type, pages, and intensity, then click Preview Animation."
+            "Choose a festival theme, pages, and intensity, then click Preview Animation."
         );
         occasionCancelButton?.classList.add("admin-hidden");
     };
@@ -381,21 +501,44 @@
             return;
         }
 
-        occasionIdInput.value = item.id || "";
-        occasionTitleInput.value = item.title || "";
-        occasionTypeInput.value = item.animation_type || "";
-        occasionStartInput.value = item.start_date || "";
-        occasionEndInput.value = item.end_date || "";
-        occasionEnabledCheckbox.checked = Boolean(item.is_enabled);
-        setOccasionTargetSelection(item.target_pages || ["all"]);
+        const normalizedItem = occasionAnimationLibrary?.normalizeOccasionAnimation({
+            ...item,
+            festival_name: item?.festival_name || "custom",
+            theme_settings: item?.theme_settings || {},
+            disable_on_mobile: item?.disable_on_mobile ?? false
+        }) || item;
 
-        const selectedIntensity = String(item.intensity || "medium");
+        occasionIdInput.value = normalizedItem.id || "";
+        occasionTitleInput.value = normalizedItem.title || "";
+
+        if (occasionFestivalInput) {
+            occasionFestivalInput.value = normalizedItem.festival_name || "";
+        }
+
+        syncOccasionFestivalUi(normalizedItem.festival_name, { autofillTitle: false });
+
+        if (occasionTypeInput) {
+            occasionTypeInput.value = normalizedItem.animation_type || "";
+        }
+
+        occasionStartInput.value = normalizedItem.start_date || "";
+        occasionEndInput.value = normalizedItem.end_date || "";
+        occasionEnabledCheckbox.checked = Boolean(normalizedItem.is_enabled);
+
+        if (occasionDisableMobileCheckbox) {
+            occasionDisableMobileCheckbox.checked = Boolean(normalizedItem.disable_on_mobile);
+        }
+
+        setOccasionThemeSettings(normalizedItem.theme_settings || {});
+        setOccasionTargetSelection(normalizedItem.target_pages || ["all"]);
+
+        const selectedIntensity = String(normalizedItem.intensity || "medium");
         occasionIntensityInputs.forEach((input) => {
             input.checked = input.value === selectedIntensity;
         });
 
         occasionCancelButton?.classList.remove("admin-hidden");
-        previewOccasionAnimation(item, { silent: true });
+        previewOccasionAnimation(normalizedItem, { silent: true });
     };
 
     const maskEmail = (value) => {
@@ -431,6 +574,12 @@
         (errorText(error).includes("does not exist") ||
             errorText(error).includes("relation") ||
             errorText(error).includes("could not find the table"));
+
+    const isMissingOccasionAnimationThemeColumnsError = (error) =>
+        ["festival_name", "theme_settings", "disable_on_mobile"].some((columnName) =>
+            errorText(error).includes(columnName) &&
+            (errorText(error).includes("does not exist") || errorText(error).includes("column"))
+        );
 
     const syncScheduleField = (checkbox, field, input) => {
         if (!checkbox || !field) {
@@ -912,16 +1061,68 @@
         renderGalleryPagination(data.length, totalPages);
     };
 
+    const fetchOccasionAnimationEntries = async (occasionId = "") => {
+        let query = client
+            .from("occasion_animations")
+            .select("id, title, festival_name, animation_type, theme_settings, start_date, end_date, target_pages, intensity, is_enabled, disable_on_mobile, created_at, updated_at");
+
+        if (occasionId) {
+            query = query.eq("id", occasionId).maybeSingle();
+        } else {
+            query = query
+                .order("start_date", { ascending: false })
+                .order("created_at", { ascending: false });
+        }
+
+        let { data, error } = await query;
+
+        if (error && isMissingOccasionAnimationThemeColumnsError(error)) {
+            let fallbackQuery = client
+                .from("occasion_animations")
+                .select("id, title, animation_type, start_date, end_date, target_pages, intensity, is_enabled, created_at, updated_at");
+
+            if (occasionId) {
+                fallbackQuery = fallbackQuery.eq("id", occasionId).maybeSingle();
+            } else {
+                fallbackQuery = fallbackQuery
+                    .order("start_date", { ascending: false })
+                    .order("created_at", { ascending: false });
+            }
+
+            ({ data, error } = await fallbackQuery);
+        }
+
+        if (error) {
+            return { data: occasionId ? null : [], error };
+        }
+
+        const normalizeItem = (item) =>
+            occasionAnimationLibrary?.normalizeOccasionAnimation({
+                ...item,
+                festival_name: item?.festival_name || "custom",
+                theme_settings: item?.theme_settings || {},
+                disable_on_mobile: item?.disable_on_mobile ?? false
+            }) || item;
+
+        if (occasionId) {
+            return {
+                data: data ? normalizeItem(data) : null,
+                error: null
+            };
+        }
+
+        return {
+            data: Array.isArray(data) ? data.map(normalizeItem) : [],
+            error: null
+        };
+    };
+
     const loadOccasionAnimations = async () => {
         if (!occasionList) {
             return;
         }
 
-        const { data, error } = await client
-            .from("occasion_animations")
-            .select("id, title, animation_type, start_date, end_date, target_pages, intensity, is_enabled, created_at, updated_at")
-            .order("start_date", { ascending: false })
-            .order("created_at", { ascending: false });
+        const { data, error } = await fetchOccasionAnimationEntries();
 
         if (error) {
             setMetricValue(occasionCountValue, "0");
@@ -948,6 +1149,10 @@
             const normalizedPages = occasionAnimationLibrary?.normalizeTargetPages(item.target_pages || []) || ["all"];
             const matchesToday = Boolean(item.is_enabled && item.start_date <= today && item.end_date >= today);
             const rangeLabel = `${formatDateLabel(item.start_date)} to ${formatDateLabel(item.end_date)}`;
+            const festivalLabel = occasionAnimationLibrary?.getFestivalLabel(item.festival_name || "custom") || item.festival_name || "Custom Theme";
+            const motionLabel = item.festival_name === "custom"
+                ? `${festivalLabel}: ${occasionAnimationLibrary?.getAnimationLabel(item.animation_type) || item.animation_type}`
+                : festivalLabel;
             const statusLabel = !item.is_enabled
                 ? "Paused"
                 : item.end_date < today
@@ -962,12 +1167,13 @@
                         <div class="admin-item-head">
                             <div>
                                 <h3>${escapeHtml(item.title)}</h3>
-                                <p>${escapeHtml(occasionAnimationLibrary?.getAnimationLabel(item.animation_type) || item.animation_type)}</p>
+                                <p>${escapeHtml(motionLabel)}</p>
                             </div>
                             <div class="admin-meta">
                                 <span>${escapeHtml(statusLabel)}</span>
                                 <span>${escapeHtml(occasionAnimationLibrary?.getIntensityLabel(item.intensity) || item.intensity)}</span>
                                 <span>${escapeHtml(rangeLabel)}</span>
+                                ${item.disable_on_mobile ? "<span>Mobile Hidden</span>" : ""}
                                 ${matchesToday ? `<span>Showing now</span>` : ""}
                             </div>
                         </div>
@@ -1186,7 +1392,12 @@
     resetOccasionForm();
 
     occasionForm?.addEventListener("change", (event) => {
+        const changedFestivalInput = event.target.closest("#occasion-festival-name");
         const changedTargetInput = event.target.closest('input[name="target_pages"]');
+
+        if (changedFestivalInput) {
+            syncOccasionFestivalUi(changedFestivalInput.value, { autofillTitle: true });
+        }
 
         if (changedTargetInput) {
             syncOccasionTargetSelection(changedTargetInput);
@@ -1235,8 +1446,12 @@
                 throw new Error(validationError);
             }
 
-            if (!allowedOccasionAnimationTypes.has(formValue.animation_type)) {
-                throw new Error("Please choose one of the available animation types.");
+            if (!allowedOccasionFestivalNames.has(formValue.festival_name)) {
+                throw new Error("Please choose one of the available festival themes.");
+            }
+
+            if (formValue.festival_name === "custom" && !allowedOccasionAnimationTypes.has(formValue.animation_type)) {
+                throw new Error("Please choose one of the available custom motion styles.");
             }
 
             if (!allowedOccasionIntensityLevels.has(formValue.intensity)) {
@@ -1245,12 +1460,15 @@
 
             const payload = {
                 title: formValue.title,
+                festival_name: formValue.festival_name,
                 animation_type: formValue.animation_type,
+                theme_settings: occasionAnimationLibrary.normalizeThemeSettings(formValue.theme_settings),
                 start_date: formValue.start_date,
                 end_date: formValue.end_date,
                 target_pages: occasionAnimationLibrary.normalizeTargetPages(formValue.target_pages),
                 intensity: formValue.intensity,
-                is_enabled: formValue.is_enabled
+                is_enabled: formValue.is_enabled,
+                disable_on_mobile: formValue.disable_on_mobile
             };
 
             let error = null;
@@ -1262,7 +1480,7 @@
             }
 
             if (error) {
-                if (isMissingOccasionAnimationsTableError(error)) {
+                if (isMissingOccasionAnimationsTableError(error) || isMissingOccasionAnimationThemeColumnsError(error)) {
                     throw new Error("Occasion animation support is not enabled in Supabase yet. Run the occasion animation SQL upgrade, then try again.");
                 }
 
@@ -1608,11 +1826,7 @@
 
             setStatus(occasionStatus, "Loading animation settings...");
 
-            const { data, error } = await client
-                .from("occasion_animations")
-                .select("id, title, animation_type, start_date, end_date, target_pages, intensity, is_enabled")
-                .eq("id", occasionId)
-                .maybeSingle();
+            const { data, error } = await fetchOccasionAnimationEntries(occasionId);
 
             if (error || !data) {
                 setStatus(occasionStatus, error?.message || "Unable to load that occasion animation.", "error");

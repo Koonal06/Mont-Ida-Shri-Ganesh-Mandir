@@ -311,16 +311,81 @@
                                         required>
                                 </div>
                                 <div class="field">
-                                    <label for="occasion-animation-type">Animation type</label>
-                                    <select id="occasion-animation-type" name="animation_type" required>
-                                        <option value="" selected disabled>Select an animation type</option>
-                                        <option value="flower-petals">Falling Flower Petals</option>
+                                    <label for="occasion-festival-name">Festival theme</label>
+                                    <select id="occasion-festival-name" name="festival_name" required>
+                                        <option value="" selected disabled>Select a festival theme</option>
+                                        <option value="ganesh-chaturthi">Ganesh Chaturthi</option>
+                                        <option value="sankashti">Sankashti</option>
+                                        <option value="durga-pooja-navratri">Durga Pooja / Navratri</option>
+                                        <option value="hanuman-jayanti">Hanuman Jayanti</option>
+                                        <option value="maharashtra-day">Maharashtra Day</option>
+                                        <option value="mauritius-independence-day">Mauritius Independence Day</option>
+                                        <option value="christmas">Christmas</option>
+                                        <option value="custom">Custom Theme</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="upload-note admin-theme-summary" id="occasion-theme-summary">
+                                <strong id="occasion-theme-heading">Choose a festival theme to preview its atmosphere</strong>
+                                <p id="occasion-theme-description">Pick a predefined occasion for a ready-made spiritual animation, or switch
+                                    to Custom to mix your own motion and accents.</p>
+                                <div class="admin-occasion-targets" id="occasion-theme-effects"></div>
+                            </div>
+
+                            <div class="admin-hidden" id="occasion-custom-fields">
+                                <div class="field">
+                                    <label for="occasion-animation-type">Custom motion style</label>
+                                    <select id="occasion-animation-type" name="animation_type">
+                                        <option value="" selected disabled>Select a custom motion style</option>
+                                        <option value="flower-petals">Flower Petals</option>
                                         <option value="glowing-diyas">Glowing Diyas</option>
                                         <option value="sparkles">Sparkles</option>
                                         <option value="floating-lights">Floating Lights</option>
                                         <option value="confetti">Confetti</option>
                                         <option value="snowflakes">Snowflakes</option>
                                     </select>
+                                </div>
+
+                                <div class="field">
+                                    <label>Custom accents</label>
+                                    <div class="admin-target-grid admin-target-grid--theme" id="occasion-theme-settings">
+                                        <label class="admin-choice-card">
+                                            <input id="occasion-setting-header-glow" data-occasion-setting="show_header_glow" type="checkbox">
+                                            <strong>Header Glow</strong>
+                                            <span>Add a warm glow near the top of the page.</span>
+                                        </label>
+                                        <label class="admin-choice-card">
+                                            <input id="occasion-setting-corner-diyas" data-occasion-setting="show_corner_diyas" type="checkbox">
+                                            <strong>Corner Diyas</strong>
+                                            <span>Show subtle diya lights near the bottom corners.</span>
+                                        </label>
+                                        <label class="admin-choice-card">
+                                            <input id="occasion-setting-background-aura" data-occasion-setting="show_background_aura" type="checkbox">
+                                            <strong>Background Aura</strong>
+                                            <span>Add a soft spiritual light pulse behind the page.</span>
+                                        </label>
+                                        <label class="admin-choice-card">
+                                            <input id="occasion-setting-top-garland" data-occasion-setting="show_top_garland" type="checkbox">
+                                            <strong>Top Garland</strong>
+                                            <span>Decorate the top edge with a gentle floral mala.</span>
+                                        </label>
+                                        <label class="admin-choice-card">
+                                            <input id="occasion-setting-watermark" data-occasion-setting="show_watermark" type="checkbox">
+                                            <strong>Watermark</strong>
+                                            <span>Add a low-opacity Ganesha watermark in the corner.</span>
+                                        </label>
+                                        <label class="admin-choice-card">
+                                            <input id="occasion-setting-ribbons" data-occasion-setting="show_ribbons" type="checkbox">
+                                            <strong>Ribbons</strong>
+                                            <span>Use flowing ribbons for celebratory occasions.</span>
+                                        </label>
+                                        <label class="admin-choice-card">
+                                            <input id="occasion-setting-festive-lights" data-occasion-setting="show_festive_lights" type="checkbox">
+                                            <strong>Festive Lights</strong>
+                                            <span>Add a soft string of lights across the top.</span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
 
@@ -402,6 +467,11 @@
                                 Enable this animation when its date range is active
                             </label>
 
+                            <label class="admin-inline-check">
+                                <input id="occasion-disable-mobile" type="checkbox" name="disable_on_mobile">
+                                Hide this animation on mobile devices
+                            </label>
+
                             <p class="helper-text admin-field-note">If two enabled occasion animations overlap on the
                                 same page, the most recently starting one will be shown first.</p>
 
@@ -419,7 +489,7 @@
                             <div class="occasion-preview-stage" id="occasion-preview-stage">
                                 <div class="occasion-preview-content">
                                     <strong id="occasion-preview-title">Preview the festive effect before saving</strong>
-                                    <span id="occasion-preview-meta">Choose an animation type, pages, and intensity, then click
+                                    <span id="occasion-preview-meta">Choose a festival theme, pages, and intensity, then click
                                         Preview Animation.</span>
                                 </div>
                             </div>
@@ -450,6 +520,15 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/supabase-config.js"></script>
+    <script src="../animations/ganeshChaturthi.js"></script>
+    <script src="../animations/sankashti.js"></script>
+    <script src="../animations/durgaPooja.js"></script>
+    <script src="../animations/hanumanJayanti.js"></script>
+    <script src="../animations/maharashtraDay.js"></script>
+    <script src="../animations/mauritiusIndependence.js"></script>
+    <script src="../animations/christmas.js"></script>
+    <script src="../js/occasion-animation-helpers.js"></script>
+    <script src="../js/occasion-animation-renderers.js"></script>
     <script src="../js/occasion-animations.js"></script>
     <script src="../js/admin.js"></script>
 </body>

@@ -1,297 +1,154 @@
 (function initializeOccasionAnimationsLibrary() {
-    const animationTypes = [
-        { value: "flower-petals", label: "Falling Flower Petals" },
-        { value: "glowing-diyas", label: "Glowing Diyas" },
-        { value: "sparkles", label: "Sparkles" },
-        { value: "floating-lights", label: "Floating Lights" },
-        { value: "confetti", label: "Confetti" },
-        { value: "snowflakes", label: "Snowflakes" }
-    ];
+    const helpers = window.siteOccasionAnimationHelpers;
+    const runtime = window.siteOccasionAnimationRenderers;
 
-    const intensityLevels = [
-        { value: "light", label: "Light" },
-        { value: "medium", label: "Medium" },
-        { value: "heavy", label: "Heavy" }
-    ];
+    if (!helpers || !runtime) {
+        return;
+    }
 
-    const targetPages = [
-        { value: "all", label: "All Pages" },
-        { value: "home", label: "Home" },
-        { value: "about", label: "About" },
-        { value: "events", label: "Events" },
-        { value: "gallery", label: "Gallery" },
-        { value: "members", label: "Members" },
-        { value: "contact", label: "Contact" }
-    ];
-
-    const typeSet = new Set(animationTypes.map((item) => item.value));
-    const intensitySet = new Set(intensityLevels.map((item) => item.value));
-    const targetPageSet = new Set(targetPages.map((item) => item.value));
-
-    const intensityProfiles = {
-        light: {
-            fallingCount: 10,
-            sparkleCount: 14,
-            floatingCount: 8,
-            diyaCount: 4
-        },
-        medium: {
-            fallingCount: 18,
-            sparkleCount: 22,
-            floatingCount: 12,
-            diyaCount: 6
-        },
-        heavy: {
-            fallingCount: 28,
-            sparkleCount: 34,
-            floatingCount: 18,
-            diyaCount: 8
+    const buildCustomPrimaryLayers = (animationType) => {
+        switch (animationType) {
+            case "flower-petals":
+                return [{
+                    kind: "falling-petals",
+                    palette: ["#f8c25b", "#f4ab2f", "#ffd98a", "#f6c56c"],
+                    count: { light: 10, medium: 16, heavy: 22 },
+                    size: [0.48, 1.02],
+                    duration: [11, 18],
+                    drift: [-6, 6],
+                    opacity: [0.22, 0.72]
+                }];
+            case "glowing-diyas":
+                return [{
+                    kind: "diyas-strip",
+                    count: { light: 4, medium: 6, heavy: 8 }
+                }];
+            case "sparkles":
+                return [{
+                    kind: "sparkle-field",
+                    palette: ["rgba(255, 240, 196, 0.94)", "rgba(255, 218, 112, 0.88)", "rgba(255, 253, 242, 0.84)"],
+                    count: { light: 14, medium: 22, heavy: 30 },
+                    size: [0.22, 0.62],
+                    top: [8, 88],
+                    left: [4, 96],
+                    duration: [2.2, 4.8],
+                    opacity: [0.24, 0.94]
+                }];
+            case "confetti":
+                return [{
+                    kind: "confetti-fall",
+                    palette: ["#f9c74f", "#f9844a", "#90be6d", "#577590"],
+                    count: { light: 10, medium: 16, heavy: 24 },
+                    size: [0.4, 0.82],
+                    duration: [10, 16],
+                    drift: [-7, 7],
+                    opacity: [0.3, 0.78]
+                }];
+            case "snowflakes":
+                return [{
+                    kind: "snowfall",
+                    palette: ["rgba(255, 255, 255, 0.96)", "rgba(234, 245, 255, 0.84)", "rgba(255, 248, 236, 0.74)"],
+                    count: { light: 12, medium: 20, heavy: 28 },
+                    size: [0.34, 0.86],
+                    duration: [10, 18],
+                    drift: [-6, 6],
+                    opacity: [0.42, 0.9]
+                }];
+            default:
+                return [{
+                    kind: "floating-particles",
+                    palette: ["rgba(255, 223, 158, 0.38)", "rgba(255, 240, 196, 0.24)", "rgba(255, 186, 92, 0.22)"],
+                    count: { light: 8, medium: 12, heavy: 18 },
+                    size: [0.54, 1.3],
+                    duration: [13, 22],
+                    drift: [-5, 5],
+                    opacity: [0.12, 0.36]
+                }];
         }
     };
 
-    const randomBetween = (min, max) => min + Math.random() * (max - min);
-    const pickRandom = (items) => items[Math.floor(Math.random() * items.length)];
+    const buildCustomThemeLayers = (config) => {
+        const settings = helpers.normalizeThemeSettings(config.theme_settings);
+        const layers = [...buildCustomPrimaryLayers(config.animation_type)];
 
-    const formatLabelFromSlug = (value) =>
-        String(value || "")
-            .split("-")
-            .filter(Boolean)
-            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(" ");
-
-    const getPageLabel = (value) =>
-        targetPages.find((item) => item.value === value)?.label || formatLabelFromSlug(value);
-
-    const getAnimationLabel = (value) =>
-        animationTypes.find((item) => item.value === value)?.label || formatLabelFromSlug(value);
-
-    const getIntensityLabel = (value) =>
-        intensityLevels.find((item) => item.value === value)?.label || formatLabelFromSlug(value);
-
-    const normalizeTargetPages = (value) => {
-        const normalizedPages = (Array.isArray(value) ? value : [value])
-            .flatMap((item) => String(item || "").split(","))
-            .map((item) =>
-                String(item || "")
-                    .trim()
-                    .toLowerCase()
-                    .replace(/[^a-z0-9]+/g, "-")
-                    .replace(/^-+|-+$/g, "")
-            )
-            .filter((item) => targetPageSet.has(item));
-
-        if (normalizedPages.includes("all")) {
-            return ["all"];
-        }
-
-        return Array.from(new Set(normalizedPages));
-    };
-
-    const resolvePageId = (pathname = window.location.pathname) => {
-        const path = String(pathname || "").toLowerCase();
-
-        if (path === "/" || path.endsWith("/index.html")) {
-            if (path.startsWith("/about/")) {
-                return "about";
-            }
-
-            if (path.startsWith("/events/")) {
-                return "events";
-            }
-
-            if (path.startsWith("/gallery/")) {
-                return "gallery";
-            }
-
-            if (path.startsWith("/members/")) {
-                return "members";
-            }
-
-            if (path.startsWith("/contact/")) {
-                return "contact";
-            }
-
-            if (path.startsWith("/admin/")) {
-                return "admin";
-            }
-
-            return "home";
-        }
-
-        if (path.includes("/about") || path.endsWith("about.html")) {
-            return "about";
-        }
-
-        if (path.includes("/events") || path.endsWith("event.html") || path.endsWith("events.html")) {
-            return "events";
-        }
-
-        if (path.includes("/gallery") || path.endsWith("gallery.html")) {
-            return "gallery";
-        }
-
-        if (path.includes("/members") || path.endsWith("members.html")) {
-            return "members";
-        }
-
-        if (path.includes("/contact") || path.endsWith("contact.html")) {
-            return "contact";
-        }
-
-        if (path.includes("/admin")) {
-            return "admin";
-        }
-
-        return "home";
-    };
-
-    const getCurrentDateInMauritius = () =>
-        new Intl.DateTimeFormat("en-CA", {
-            timeZone: "Indian/Mauritius",
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit"
-        }).format(new Date());
-
-    const validateOccasionAnimation = (value) => {
-        const title = String(value?.title || "").trim();
-        const animationType = String(value?.animation_type || "").trim();
-        const startDate = String(value?.start_date || "").trim();
-        const endDate = String(value?.end_date || "").trim();
-        const targetPagesValue = normalizeTargetPages(value?.target_pages || []);
-        const intensity = String(value?.intensity || "").trim();
-
-        if (!title) {
-            return "Please enter an occasion name.";
-        }
-
-        if (!typeSet.has(animationType)) {
-            return "Please choose a valid animation type.";
-        }
-
-        if (!startDate || !endDate) {
-            return "Please choose a valid start and end date.";
-        }
-
-        if (endDate < startDate) {
-            return "The end date must be on or after the start date.";
-        }
-
-        if (targetPagesValue.length === 0) {
-            return "Please choose at least one target page.";
-        }
-
-        if (!intensitySet.has(intensity)) {
-            return "Please choose a valid intensity level.";
-        }
-
-        return "";
-    };
-
-    const createHost = (container, config, options = {}) => {
-        const host = document.createElement("div");
-        host.className = `occasion-animation-layer occasion-animation-layer--${config.animation_type} occasion-animation-layer--${config.intensity}${options.preview ? " is-preview" : ""}`;
-        host.setAttribute("aria-hidden", "true");
-        container.appendChild(host);
-        return host;
-    };
-
-    const createParticle = (host, className, styleMap = {}) => {
-        const particle = document.createElement("span");
-        particle.className = className;
-
-        Object.entries(styleMap).forEach(([key, value]) => {
-            particle.style.setProperty(key, value);
-        });
-
-        host.appendChild(particle);
-        return particle;
-    };
-
-    const renderFallingParticles = (host, config, options) => {
-        const paletteByType = {
-            "flower-petals": ["#ffb997", "#ff8fab", "#ffcf99", "#ffc971"],
-            confetti: ["#f9c74f", "#f9844a", "#90be6d", "#577590", "#f94144"],
-            snowflakes: ["#ffffff", "#e8f3ff", "#f4fbff"]
-        };
-
-        const profile = intensityProfiles[config.intensity] || intensityProfiles.medium;
-        const count = profile.fallingCount;
-        const palette = paletteByType[config.animation_type] || paletteByType["flower-petals"];
-
-        for (let index = 0; index < count; index += 1) {
-            const size = config.animation_type === "confetti"
-                ? `${randomBetween(0.45, 0.85)}rem`
-                : config.animation_type === "snowflakes"
-                    ? `${randomBetween(0.4, 0.9)}rem`
-                    : `${randomBetween(0.55, 1.1)}rem`;
-
-            createParticle(host, `occasion-particle occasion-particle--fall occasion-particle--${config.animation_type}`, {
-                "--size": size,
-                "--left": `${randomBetween(0, 100)}%`,
-                "--delay": `${randomBetween(-12, 0)}s`,
-                "--duration": `${randomBetween(8, 16)}s`,
-                "--drift": `${randomBetween(-8, 8)}rem`,
-                "--spin": `${randomBetween(120, 540)}deg`,
-                "--opacity": String(randomBetween(0.45, 0.95)),
-                "--hue": pickRandom(palette)
+        if (settings.show_header_glow) {
+            layers.push({
+                kind: "header-glow",
+                palette: ["rgba(255, 214, 120, 0.28)", "rgba(255, 238, 189, 0.18)"],
+                count: { light: 2, medium: 3, heavy: 4 },
+                size: [8, 14],
+                top: [-4, 18],
+                left: [10, 90],
+                opacity: [0.14, 0.34],
+                duration: [6, 11]
             });
         }
-    };
 
-    const renderSparkles = (host, config) => {
-        const count = (intensityProfiles[config.intensity] || intensityProfiles.medium).sparkleCount;
+        if (settings.show_corner_diyas && config.animation_type !== "glowing-diyas") {
+            layers.push({ kind: "corner-diyas", count: { light: 2, medium: 4, heavy: 6 } });
+        }
 
-        for (let index = 0; index < count; index += 1) {
-            createParticle(host, "occasion-particle occasion-particle--sparkle", {
-                "--size": `${randomBetween(0.22, 0.55)}rem`,
-                "--left": `${randomBetween(4, 96)}%`,
-                "--top": `${randomBetween(6, 86)}%`,
-                "--delay": `${randomBetween(-4, 0)}s`,
-                "--duration": `${randomBetween(1.8, 4.5)}s`,
-                "--opacity": String(randomBetween(0.45, 0.95))
+        if (settings.show_background_aura) {
+            layers.push({
+                kind: "aura",
+                palette: ["rgba(255, 214, 120, 0.14)", "rgba(255, 244, 215, 0.08)"],
+                duration: [7, 12]
             });
         }
-    };
 
-    const renderFloatingLights = (host, config) => {
-        const count = (intensityProfiles[config.intensity] || intensityProfiles.medium).floatingCount;
-
-        for (let index = 0; index < count; index += 1) {
-            createParticle(host, "occasion-particle occasion-particle--floating-light", {
-                "--size": `${randomBetween(0.8, 1.9)}rem`,
-                "--left": `${randomBetween(0, 100)}%`,
-                "--delay": `${randomBetween(-10, 0)}s`,
-                "--duration": `${randomBetween(10, 18)}s`,
-                "--drift": `${randomBetween(-5, 5)}rem`,
-                "--opacity": String(randomBetween(0.18, 0.45))
+        if (settings.show_top_garland) {
+            layers.push({
+                kind: "garland",
+                palette: ["#c2424d", "#f0b23d", "#ffe7ad"],
+                flowerCount: { light: 10, medium: 14, heavy: 18 }
             });
         }
-    };
 
-    const renderGlowingDiyas = (host, config) => {
-        const count = (intensityProfiles[config.intensity] || intensityProfiles.medium).diyaCount;
-        const strip = document.createElement("div");
-        strip.className = "occasion-diya-strip";
-        host.appendChild(strip);
-
-        for (let index = 0; index < count; index += 1) {
-            const diya = document.createElement("span");
-            diya.className = "occasion-diya";
-            diya.style.setProperty("--delay", `${randomBetween(-2, 0)}s`);
-            diya.style.setProperty("--duration", `${randomBetween(2.2, 3.4)}s`);
-            diya.style.setProperty("--offset", `${randomBetween(-0.3, 0.3)}rem`);
-            strip.appendChild(diya);
+        if (settings.show_watermark) {
+            layers.push({
+                kind: "watermark",
+                asset: "assets/images/ganesha-logo.svg",
+                opacity: 0.045,
+                width: "clamp(7rem, 16vw, 11rem)",
+                top: "4.8rem",
+                right: "1rem"
+            });
         }
+
+        if (settings.show_ribbons) {
+            layers.push({
+                kind: "ribbons",
+                palette: ["#f18825", "#ffb14d", "#f2a746"],
+                count: { light: 2, medium: 3, heavy: 4 },
+                width: [1.2, 2],
+                duration: [10, 16],
+                area: "top-sides"
+            });
+        }
+
+        if (settings.show_festive_lights) {
+            layers.push({
+                kind: "festive-lights",
+                palette: ["#f94144", "#f9c74f", "#90be6d", "#577590"],
+                bulbCount: { light: 10, medium: 14, heavy: 18 }
+            });
+        }
+
+        return layers;
     };
 
-    const renderers = {
-        "flower-petals": renderFallingParticles,
-        confetti: renderFallingParticles,
-        snowflakes: renderFallingParticles,
-        sparkles: renderSparkles,
-        "floating-lights": renderFloatingLights,
-        "glowing-diyas": renderGlowingDiyas
+    const buildThemeLayers = (config) => {
+        if (config.festival_name === "custom") {
+            return buildCustomThemeLayers(config);
+        }
+
+        const theme = helpers.getFestivalTheme(config.festival_name);
+
+        if (typeof theme.buildLayers === "function") {
+            return theme.buildLayers(config);
+        }
+
+        return buildCustomPrimaryLayers(theme.defaultAnimationType);
     };
 
     const mount = (container, value, options = {}) => {
@@ -299,44 +156,61 @@
             return null;
         }
 
-        const config = {
-            title: String(value?.title || "").trim(),
-            animation_type: String(value?.animation_type || ""),
-            start_date: String(value?.start_date || ""),
-            end_date: String(value?.end_date || ""),
-            target_pages: normalizeTargetPages(value?.target_pages || []),
-            intensity: String(value?.intensity || "medium"),
-            is_enabled: Boolean(value?.is_enabled ?? true)
-        };
-
-        const validationError = validateOccasionAnimation(config);
+        const rawValue = value || {};
+        const validationError = helpers.validateOccasionAnimation({
+            ...rawValue,
+            festival_name: rawValue?.festival_name || "custom",
+            animation_type: rawValue?.animation_type || helpers.getFestivalDefaultAnimationType(rawValue?.festival_name || "custom")
+        });
 
         if (validationError) {
-            return {
-                destroy() {}
-            };
+            return { destroy() {} };
         }
 
-        const renderer = renderers[config.animation_type];
+        const config = helpers.normalizeOccasionAnimation(rawValue);
 
-        if (!renderer) {
-            return {
-                destroy() {}
-            };
+        if (!options.preview && config.disable_on_mobile && runtime.isMobileViewport()) {
+            return { destroy() {} };
         }
 
-        const host = createHost(container, config, options);
-        renderer(host, config, options);
+        const layers = buildThemeLayers(config).filter(Boolean);
+
+        if (layers.length === 0) {
+            return { destroy() {} };
+        }
+
+        const host = runtime.createHost(container, config, options);
+
+        const cleanupCallbacks = [];
+
+        layers.forEach((layer) => {
+            const renderer = runtime.renderers[layer.kind];
+
+            if (renderer) {
+                const cleanup = renderer(host, layer, config, options);
+
+                if (typeof cleanup === "function") {
+                    cleanupCallbacks.push(cleanup);
+                }
+            }
+        });
 
         return {
             destroy() {
+                cleanupCallbacks.forEach((cleanup) => {
+                    try {
+                        cleanup();
+                    } catch (error) {
+                        console.warn("Occasion animation cleanup failed.", error);
+                    }
+                });
                 host.remove();
             }
         };
     };
 
     const matchesTargetPage = (value, pageId) => {
-        const selectedPages = normalizeTargetPages(value?.target_pages || []);
+        const selectedPages = helpers.normalizeTargetPages(value?.target_pages || []);
 
         if (selectedPages.includes("all")) {
             return true;
@@ -346,16 +220,26 @@
     };
 
     window.siteOccasionAnimations = {
-        animationTypes,
-        intensityLevels,
-        targetPages,
-        getPageLabel,
-        getAnimationLabel,
-        getIntensityLabel,
-        getCurrentDateInMauritius,
-        normalizeTargetPages,
-        resolvePageId,
-        validateOccasionAnimation,
+        animationTypes: helpers.customAnimationTypes,
+        customAnimationTypes: helpers.customAnimationTypes,
+        festivalThemes: helpers.festivalThemes,
+        intensityLevels: helpers.intensityLevels,
+        targetPages: helpers.targetPages,
+        customThemeSettingDefaults: helpers.customThemeSettingDefaults,
+        getPageLabel: helpers.getPageLabel,
+        getAnimationLabel: helpers.getAnimationLabel,
+        getFestivalLabel: helpers.getFestivalLabel,
+        getFestivalDescription: helpers.getFestivalDescription,
+        getFestivalEffects: helpers.getFestivalEffects,
+        getFestivalTheme: helpers.getFestivalTheme,
+        getFestivalDefaultAnimationType: helpers.getFestivalDefaultAnimationType,
+        getIntensityLabel: helpers.getIntensityLabel,
+        getCurrentDateInMauritius: helpers.getCurrentDateInMauritius,
+        normalizeTargetPages: helpers.normalizeTargetPages,
+        normalizeThemeSettings: helpers.normalizeThemeSettings,
+        normalizeOccasionAnimation: helpers.normalizeOccasionAnimation,
+        resolvePageId: helpers.resolvePageId,
+        validateOccasionAnimation: helpers.validateOccasionAnimation,
         matchesTargetPage,
         mount
     };
